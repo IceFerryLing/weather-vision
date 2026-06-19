@@ -1,74 +1,66 @@
-# Weather Vision | 天气视窗
+# Weather Vision · 天气视窗
 
-一个动态响应天气的前端应用，根据实时天气数据自动改变页面视觉效果。
+> 一款科技感十足的天气仪表盘 — 玻璃拟态 · SVG 动态图标 · 粒子背景 · 主题自适应。
 
-## 项目亮点
+## ✨ 特性
 
-本项目 **100% 纯会话实现** —— 从 GitHub 登录、仓库创建、代码编写到最终发布，全程通过对话交互完成，未使用任何本地开发工具或手动操作。
+- 🌍 **全球城市搜索** — 基于 Open-Meteo Geocoding API，无需 Key
+- 📍 **地理定位** — 一键定位当前位置的实时天气
+- 🎨 **主题自适应** — 晴天 / 多云 / 阴雨 / 雪 / 雷 / 雾 / 夜间各有独特配色
+- 🌤 **动态 SVG 图标** — 阳光旋转、月亮发光、云朵飘动、雨滴下落…
+- 🔢 **数字滚动动画** — easeOutCubic 缓动，数据变化有节奏感
+- ✨ **粒子背景** — Canvas 轻量级氛围粒子
+- 📊 **24h 小时级 + 7 天预报** — 温度曲线、降雨概率一目了然
+- ⚡ **轻量** — 纯原生 ES Module + Vite，无框架依赖，Gzip 约 14KB
 
-### 纯会话实现流程
+## 🛠 开发
 
-| 步骤 | 操作内容 | 实现方式 |
-|------|---------|---------|
-| 1. GitHub 登录 | 输入用户名、密码、二次验证码 | 对话交互完成认证 |
-| 2. 仓库创建 | 创建 `weather-vision` 公开仓库 | 浏览器自动化操作 |
-| 3. Token 生成 | 创建 Personal Access Token | 浏览器自动化操作 |
-| 4. 代码编写 | HTML + CSS + JavaScript | 对话生成完整代码 |
-| 5. 代码推送 | Git 初始化、提交、推送到远程 | 命令行自动化执行 |
-| 6. 效果验证 | 本地启动服务器预览效果 | 对话交互完成验证 |
+```bash
+npm install       # 安装依赖
+npm run dev       # 启动开发服务器 http://localhost:3000
+npm run build     # 生产构建 → dist/
+npm run preview   # 本地预览生产构建
+npm run lint      # 代码质量检查
+npm run format    # Prettier 格式化
+```
 
-## 功能特点
+## 🌐 部署
 
-- **实时天气数据** — 使用 Open-Meteo 免费 API 获取天气信息
-- **动态视觉效果** — 根据天气类型自动切换背景、动画和图标
-- **天气类型支持** — 晴天、多云、雨天、雪天、雷暴、雾天、夜晚
-- **详细天气信息** — 温度、湿度、风速、气压、能见度
-- **未来预报** — 7 天天气预报
-- **24 小时趋势** — 逐小时天气变化
-- **响应式设计** — 适配桌面和移动设备
+### GitHub Pages（推荐，自动）
 
-## 技术栈
+1. 把代码 push 到 GitHub 仓库（例如 `your-name/weather-app`）
+2. 进入仓库 **Settings → Pages**，Source 选择 **GitHub Actions**
+3. 每次 push 到 `main` 分支会自动触发 `.github/workflows/deploy.yml`
+4. 部署完成后访问 `https://<your-name>.github.io/weather-app/`
 
-- HTML5
-- CSS3 (动画、渐变、毛玻璃效果)
-- JavaScript (ES6+)
-- Open-Meteo API (免费天气数据)
+### 任意静态托管
 
-## 使用方法
+`dist/` 目录是纯静态产物，直接上传到 Netlify / Vercel / Cloudflare Pages / Nginx 均可。
 
-1. 打开 `index.html` 文件
-2. 在搜索框输入城市名称（如：北京、Shanghai）
-3. 或使用定位按钮获取当前位置天气
+## 📁 项目结构
 
-## 天气效果预览
+```
+weather-app/
+├── src/
+│   ├── index.html
+│   ├── main.js                 # 应用入口
+│   ├── styles/                 # CSS 变量 / 基础 / 动画 / 组件
+│   └── js/
+│       ├── config/config.js    # 主题 & 代码映射
+│       ├── api/weather.js      # fetch 封装
+│       ├── services/WeatherService.js # 业务层
+│       ├── components/         # WeatherIcon / SearchBar / SkeletonLoader
+│       └── utils/              # format / cache
+├── public/                     # 静态资源（favicon 等）
+├── vite.config.js
+└── .github/workflows/deploy.yml
+```
 
-| 天气类型 | 视觉效果 |
-|---------|---------|
-| 晴天 | 渐变紫蓝背景 + 旋转太阳 |
-| 多云 | 深蓝背景 + 飘动云朵 |
-| 雨天 | 暗色背景 + 下落雨滴 |
-| 雪天 | 淡蓝背景 + 飘落雪花 |
-| 雷暴 | 深色背景 + 雨滴 + 闪电 |
-| 雾天 | 灰色背景 + 流动雾气 |
-| 夜晚 | 深色星空背景 + 月亮 |
+## 🔌 数据来源
 
-## 数据来源
+- **Open-Meteo Forecast API** — 免费、无需注册、支持全球
+- **Open-Meteo Geocoding API** — 城市坐标解析
 
-- 天气数据：[Open-Meteo](https://open-meteo.com/) (免费，无需 API Key)
-- 地理编码：[Open-Meteo Geocoding API](https://open-meteo.com/en/docs/geocoding-api)
+## 📄 License
 
-## 项目说明
-
-本项目由 **TRAE 纯会话实现**，包括：
-- GitHub 账户登录（用户名、密码、二次验证）
-- 仓库创建与管理
-- Personal Access Token 生成
-- 完整前端代码编写（HTML/CSS/JS）
-- Git 版本控制与代码推送
-- 本地服务器启动与效果预览
-
-所有操作均通过对话交互完成，展示了 AI 辅助全栈开发的能力。
-
----
-
-Created with TRAE | 2026
+MIT

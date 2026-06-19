@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Weather Vision — 科技感天气仪表盘，支持全球城市搜索 / 地理定位 / 24 小时与 7 天预报。" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Weather Vision · 天气视窗</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <!-- ========================================================
+         背景层：多层渐变 + 粒子（由 JS 渲染到 canvas）
+         ======================================================== -->
+    <div class="bg-layer" aria-hidden="true">
+      <div class="bg-gradient"></div>
+      <div class="bg-grid"></div>
+      <canvas id="bg-particles" class="bg-particles"></canvas>
+    </div>
+
+    <!-- ========================================================
+         应用主容器
+         ======================================================== -->
+    <main class="app">
+      <!-- ---------- Header ---------- -->
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M7 18a5 5 0 1 1 2.5-8.6A7 7 0 0 1 22 12a5 5 0 0 1-5 6H7z"/>
+              <circle cx="12" cy="13" r="2.2"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">WEATHER&nbsp;VISION</span>
+            <span class="brand-subtitle">实时天气 · 城市洞察</span>
+          </div>
+        </div>
+        <div class="header-meta">
+          <span class="live-dot" aria-hidden="true">●</span>
+          <span id="header-date" class="header-date">加载中…</span>
+        </div>
+      </header>
+
+      <!-- ---------- Search 栏 ---------- -->
+      <section class="search-container">
+        <div class="search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="搜索城市，例如：上海 / Tokyo / Paris / Reykjavik"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="search-btn" class="search-btn" type="button">
+            <span>查询</span>
+          </button>
+          <button id="geo-btn" class="geo-btn" type="button" title="使用当前位置">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+            </svg>
+          </button>
+        </div>
+        <p id="error" class="search-error" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- ---------- Hero 主卡片（温度 + 天气描述 + 图标） ---------- -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-left">
+            <h1 id="hero-city" class="hero-city">--</h1>
+            <p id="hero-date" class="hero-date">--</p>
+
+            <div class="hero-temp-line">
+              <span id="hero-temp" class="hero-temp">0°</span>
+              <span id="hero-desc" class="hero-desc">--</span>
+            </div>
+
+            <div class="hero-meta">
+              <div class="hero-meta-item">
+                <span class="hero-meta-label">今日区间</span>
+                <span id="hero-range" class="hero-meta-value">-- ~ --</span>
+              </div>
+              <div class="hero-meta-item">
+                <span class="hero-meta-label">体感温度</span>
+                <span id="hero-feels" class="hero-meta-value">--</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="hero-icon" class="hero-icon" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <!-- ---------- Metrics 6 个小指标卡 ---------- -->
+      <section class="metrics">
+        <article class="metric-card">
+          <header class="metric-head">
+            <span class="metric-title">湿度</span>
+            <span class="metric-chip">HUMIDITY</span>
+          </header>
+          <p class="metric-value"><span id="metric-humidity">0</span><span class="metric-unit">%</span></p>
+        </article>
+
+        <article class="metric-card">
+          <header class="metric-head">
+            <span class="metric-title">风速</span>
+            <span class="metric-chip">WIND</span>
+          </header>
+          <p class="metric-value"><span id="metric-wind">0</span><span class="metric-unit">km/h</span></p>
+          <p class="metric-sub" data-metric-wind>--</p>
+        </article>
+
+        <article class="metric-card">
+          <header class="metric-head">
+            <span class="metric-title">气压</span>
+            <span class="metric-chip">PRESSURE</span>
+          </header>
+          <p class="metric-value"><span id="metric-pressure">0</span><span class="metric-unit">hPa</span></p>
+        </article>
+
+        <article class="metric-card">
+          <header class="metric-head">
+            <span class="metric-title">能见度</span>
+            <span class="metric-chip">VISIBILITY</span>
+          </header>
+          <p class="metric-value"><span id="metric-visibility">0</span><span class="metric-unit">km</span></p>
+        </article>
+
+        <article class="metric-card">
+          <header class="metric-head">
+            <span class="metric-title">紫外线</span>
+            <span class="metric-chip">UV INDEX</span>
+          </header>
+          <p class="metric-value"><span id="metric-uv">0</span></p>
+        </article>
+
+        <article class="metric-card metric-sunrise">
+          <header class="metric-head">
+            <span class="metric-title">日出 · 日落</span>
+            <span class="metric-chip">SUN</span>
+          </header>
+          <div class="metric-sun">
+            <div class="metric-sun-item">
+              <span class="metric-sun-label">日出</span>
+              <span id="sunrise" class="metric-sun-value">--:--</span>
+            </div>
+            <div class="metric-sun-spacer" aria-hidden="true">
+              <svg viewBox="0 0 80 28" preserveAspectRatio="none">
+                <path d="M2 24 Q40 -6 78 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                <circle cx="22" cy="12" r="3.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="metric-sun-item">
+              <span class="metric-sun-label">日落</span>
+              <span id="sunset" class="metric-sun-value">--:--</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ---------- 24 小时预报 ---------- -->
+      <section class="panel panel-hourly">
+        <header class="panel-head">
+          <h2>24 HOUR FORECAST</h2>
+          <span class="panel-sub">每小时 · 温度 &amp; 降水概率</span>
+        </header>
+        <div id="hourly" class="hourly"></div>
+      </section>
+
+      <!-- ---------- 7 天预报 ---------- -->
+      <section class="panel panel-daily">
+        <header class="panel-head">
+          <h2>7-DAY OUTLOOK</h2>
+          <span class="panel-sub">每日 · 温度区间 &amp; 天气描述</span>
+        </header>
+        <div id="daily" class="daily"></div>
+      </section>
+
+      <!-- ---------- Footer ---------- -->
+      <footer class="app-footer">
+        <p>数据来源：Open-Meteo · 由 Weather Vision 纯会话实现</p>
+      </footer>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

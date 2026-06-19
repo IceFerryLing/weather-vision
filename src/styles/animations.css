@@ -1,0 +1,220 @@
+/**
+ * animations.css
+ * ------------------------------------------------------------------
+ * 所有关键帧动画集中管理。
+ * 分类：
+ *   · 入场（fade / slide / rise）
+ *   · 持续动效（float / pulse / shimmer）
+ *   · 天气动效（rain / snow / sun）
+ *   · 骨架屏 shimmer
+ *   · 数字滚动辅助
+ * ------------------------------------------------------------------
+ */
+
+/* ---------- 入场 ---------- */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale3d(0.96, 0.96, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translate3d(16px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ---------- 持续动效 ---------- */
+
+@keyframes float-y {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -8px, 0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.9; }
+  50%      { opacity: 0.45; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(56, 232, 200, 0.55);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(56, 232, 200, 0);
+  }
+}
+
+/* 背景 orb 漂浮（为大型发光球提供缓慢变化） */
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(6%, -4%) scale(1.08); }
+  66%      { transform: translate(-4%, 5%) scale(0.94); }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-8%, 6%) scale(1.12); }
+}
+
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%      { transform: translate(5%, 6%) scale(0.95); }
+  75%      { transform: translate(-6%, -4%) scale(1.05); }
+}
+
+/* shimmer —— 骨架屏 / 数字微光 */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* 扫描线 —— 给英雄卡片或主视觉增加科技感 */
+@keyframes scan-line {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+/* 自转 —— 用于太阳光线环 */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* 呼吸 —— 发光边框 / 脉冲图标 */
+@keyframes breathe {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* 画圆弧 —— 供湿度 / 电量环 */
+@keyframes draw-arc {
+  from { stroke-dashoffset: var(--arc-total, 283); }
+  to   { stroke-dashoffset: var(--arc-now, 100); }
+}
+
+/* 曲线生长 —— 温度折线 */
+@keyframes draw-path {
+  from { stroke-dashoffset: var(--path-total, 1000); }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* 上升填充 —— 柱状图 */
+@keyframes grow-up {
+  from { transform: scaleY(0.1); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+/* 粒子上升 —— 天气粒子（雨/雪由 canvas 绘制，这里保留备用） */
+@keyframes particle-fall {
+  from {
+    transform: translate3d(0, -10vh, 0);
+    opacity: 0;
+  }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  to   {
+    transform: translate3d(0, 110vh, 0);
+    opacity: 0;
+  }
+}
+
+/* ---------- 交互 ---------- */
+
+/* hover 时的微小抬起（用于卡片） */
+@keyframes lift-in {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-2px); }
+}
+
+/* 键盘聚焦环（辅助） */
+@keyframes focus-ring {
+  from { box-shadow: 0 0 0 0 rgba(91, 157, 255, 0.4); }
+  to   { box-shadow: 0 0 0 8px rgba(91, 157, 255, 0); }
+}
+
+/* ---------- 通用动画工具类 ---------- */
+
+.anim-fade-in      { animation: fade-in var(--dur-base) var(--ease-out) both; }
+.anim-fade-up      { animation: fade-up var(--dur-slow) var(--ease-out) both; }
+.anim-fade-down    { animation: fade-down var(--dur-slow) var(--ease-out) both; }
+.anim-scale-in     { animation: scale-in var(--dur-base) var(--ease-spring) both; }
+.anim-float        { animation: float-y 6s var(--ease-in-out) infinite; }
+.anim-pulse-soft   { animation: pulse-soft 3s var(--ease-in-out) infinite; }
+.anim-breathe      { animation: breathe 4s var(--ease-in-out) infinite; }
+
+/* stagger 辅助：由 JS 设置 --i 变量即可延迟 */
+.anim-stagger {
+  animation-delay: calc(var(--i, 0) * 80ms + 80ms);
+}
+
+/* 骨架屏 shimmer 背景（可通过 background-image 叠加到元素） */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(91, 157, 255, 0.08),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}

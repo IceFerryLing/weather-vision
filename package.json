@@ -1,0 +1,21 @@
+{
+  "name": "weather-vision",
+  "version": "2.0.0",
+  "description": "A modern, beautifully designed weather web application featuring glassmorphism UI, animated SVG icons, and real-time weather data from Open-Meteo API.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.{js,css,html}\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.0",
+    "vitest": "^1.2.0"
+  }
+}
