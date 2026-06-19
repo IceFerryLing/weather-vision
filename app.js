@@ -935,5 +935,9 @@ function init() {
     searchWeather('北京');
 }
 
-// 启动应用
-document.addEventListener('DOMContentLoaded', init);
+// 启动应用 - 如果 DOM 已就绪则立即执行
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
