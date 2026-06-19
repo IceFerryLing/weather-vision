@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气视窗 | Weather Vision</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="weather-container" id="weatherContainer">
+        <!-- 动态背景层 -->
+        <div class="bg-layer" id="bgLayer"></div>
+        
+        <!-- 天气动画层 -->
+        <div class="weather-effects" id="weatherEffects">
+            <div class="sun" id="sun"></div>
+            <div class="moon" id="moon"></div>
+            <div class="clouds-container" id="cloudsContainer"></div>
+            <div class="rain-container" id="rainContainer"></div>
+            <div class="snow-container" id="snowContainer"></div>
+            <div class="lightning-container" id="lightningContainer"></div>
+            <div class="fog-container" id="fogContainer"></div>
+        </div>
+
+        <!-- 主内容 -->
+        <div class="content">
+            <!-- 搜索栏 -->
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="输入城市名称 (如: 北京, Shanghai)..." autocomplete="off">
+                <button id="searchBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button id="locationBtn" title="定位当前位置">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 当前天气 -->
+            <div class="current-weather" id="currentWeather">
+                <div class="city-info">
+                    <h1 id="cityName">--</h1>
+                    <p id="currentDate">--</p>
+                </div>
+                <div class="weather-main">
+                    <div class="weather-icon" id="weatherIcon">
+                        <svg viewBox="0 0 100 100" class="icon-sun">
+                            <circle cx="50" cy="50" r="20" fill="#FFD700"/>
+                            <g class="sun-rays">
+                                <line x1="50" y1="10" x2="50" y2="20" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="50" y1="80" x2="50" y2="90" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="10" y1="50" x2="20" y2="50" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="80" y1="50" x2="90" y2="50" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="22" y1="22" x2="29" y2="29" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="71" y1="71" x2="78" y2="78" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="22" y1="78" x2="29" y2="71" stroke="#FFD700" stroke-width="3"/>
+                                <line x1="71" y1="29" x2="78" y2="22" stroke="#FFD700" stroke-width="3"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="temperature">
+                        <span id="tempValue">--</span>
+                        <span class="unit">°C</span>
+                    </div>
+                </div>
+                <div class="weather-desc" id="weatherDesc">--</div>
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                        <span>湿度</span>
+                        <strong id="humidity">--%</strong>
+                    </div>
+                    <div class="detail-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+                        </svg>
+                        <span>风速</span>
+                        <strong id="windSpeed">-- km/h</strong>
+                    </div>
+                    <div class="detail-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                        <span>气压</span>
+                        <strong id="pressure">-- hPa</strong>
+                    </div>
+                    <div class="detail-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>能见度</span>
+                        <strong id="visibility">-- km</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 未来预报 -->
+            <div class="forecast-section">
+                <h2>未来预报</h2>
+                <div class="forecast-container" id="forecastContainer">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 小时预报 -->
+            <div class="hourly-section">
+                <h2>24小时趋势</h2>
+                <div class="hourly-container" id="hourlyContainer">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载动画 -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>正在获取天气数据...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
