@@ -1,25 +1,24 @@
 /* =============================================================
- * main.css — 组件样式 v2.0
- * 参考：shadcn/ui · Linear · Apple HIG · Arc Design
- * 命名约定：BEM（block__element--modifier）
+ * main.css — 组件样式
+ * 设计语言：Glassmorphism · 克制留白 · 极简状态色
  * ============================================================= */
 
 @import './variables.css';
 @import './base.css';
-@import './animations.css';
 
-/* =============================================================
- * 1. Header — 品牌区 + 时间
- * ============================================================= */
+/* ============================================================
+ * 1. Header & 搜索栏
+ * ============================================================ */
+
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-2) 0 var(--space-1);
-  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
+  gap: var(--space-5);
+  padding: var(--space-2) 0;
 }
 
+/* --- 品牌 --- */
 .brand {
   display: flex;
   align-items: center;
@@ -29,18 +28,14 @@
 .brand-logo {
   width: 36px;
   height: 36px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%);
-  color: #fff;
   font-size: 18px;
-  box-shadow: 0 6px 20px -6px var(--theme-accent);
-  transition: transform var(--dur-base) var(--ease-out);
-}
-.brand-logo:hover {
-  transform: scale(1.06) rotate(-6deg);
+  box-shadow: 0 4px 14px -4px rgba(122, 184, 217, 0.4);
 }
 
 .brand-text {
@@ -48,723 +43,756 @@
   flex-direction: column;
   line-height: 1.2;
 }
+
 .brand-title {
   font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text-1);
-}
-.brand-subtitle {
-  font-size: var(--fs-xs);
-  color: var(--color-text-3);
-  margin-top: 2px;
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 
+.brand-sub {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+
+/* --- Header 操作区 --- */
 .header-actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  flex: 1;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
-.header-live {
-  display: inline-flex;
+/* --- 搜索组合栏 --- */
+.search-bar {
+  display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-1);
+  padding: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur) var(--ease-out),
+              box-shadow var(--dur) var(--ease-out);
+}
+
+.search-bar:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-sm);
+}
+
+.search-bar__icon {
+  width: 18px;
+  height: 18px;
+  padding: 0 var(--space-2);
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.search-bar__input {
+  min-width: 240px;
+  width: 28vw;
+  max-width: 420px;
+  height: 36px;
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+  background: transparent;
+  flex-shrink: 1;
+}
+
+/* ============================================================
+ * 2. 按钮 — 极简护栏式（Primary / Ghost）
+ * ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 18px;
+  border-radius: var(--radius-md);
   font-size: var(--fs-sm);
-  color: var(--color-text-2);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+
+.btn:active { transform: translateY(1px); }
+
+/* Primary：实色填充（克制的强调色） */
+.btn--primary {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #0a0d14;
+  box-shadow: 0 2px 10px -4px rgba(122, 184, 217, 0.45);
+}
+.btn--primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 4px 14px -4px rgba(122, 184, 217, 0.55);
+}
+
+/* Ghost：玻璃质感的辅助按钮 */
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--border-2);
+  color: var(--text-secondary);
+}
+.btn--ghost:hover {
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border-color: var(--border-3);
+}
+.btn--ghost svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* --- 主题模式切换按钮组 --- */
+.mode-switch {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg);
+}
+
+.mode-btn {
+  width: 32px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--dur-fast), color var(--dur-fast);
+}
+
+.mode-btn svg { width: 15px; height: 15px; }
+
+.mode-btn:hover { color: var(--text-primary); background: var(--surface-1); }
+.mode-btn.is-active {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+/* ============================================================
+ * 3. 信息面包屑（城市·日期·实时）
+ * ============================================================ */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0 var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.breadcrumb__left,
+.breadcrumb__right {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.breadcrumb__city {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.breadcrumb__sep {
+  color: var(--text-quaternary);
+}
+
+.breadcrumb__date,
+.breadcrumb__updated {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
 }
 
 .live-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-success);
-  color: var(--color-success);
-  display: inline-block;
-  animation: live-pulse 2.2s ease-in-out infinite;
+  background: var(--status-sun);
+  position: relative;
+  align-self: center;
+  box-shadow: 0 0 0 3px rgba(232, 200, 135, 0.18);
+  animation: live-pulse 2.4s ease-in-out infinite;
 }
 
-/* =============================================================
- * 2. Button — 现代风格按钮（参考 shadcn/ui & Linear）
- * ============================================================= */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: 0 18px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--tracking-tight);
-  border: 1px solid transparent;
-  transition: background-color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
-  white-space: nowrap;
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
-.btn__icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+/* ============================================================
+ * 4. Dashboard 栅格（Hero + 侧边面板）
+ * ============================================================ */
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-5);
 }
 
-/* Primary — 实色 + 光晕 */
-.btn--primary {
-  background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%);
-  color: #fff;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 4px 14px -4px var(--theme-accent);
-}
-.btn--primary:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
-    0 8px 22px -6px var(--theme-accent);
-}
-.btn--primary:active {
-  transform: translateY(0);
-  filter: brightness(0.95);
+@media (max-width: 900px) {
+  .dashboard { grid-template-columns: 1fr; }
 }
 
-/* Ghost — 透明背景（辅助操作） */
-.btn--ghost {
-  background: var(--color-surface-2);
-  border-color: var(--color-border-1);
-  color: var(--color-text-2);
-}
-.btn--ghost:hover {
-  background: var(--color-surface-hover);
-  border-color: var(--color-border-2);
-  color: var(--color-text-1);
-}
-.btn--ghost:active {
-  transform: scale(0.98);
-}
+.col { display: flex; flex-direction: column; gap: var(--space-5); }
 
-/* =============================================================
- * 3. Search Combo — 输入框 + 按钮融合（参考 Linear 搜索栏）
- * ============================================================= */
-.search-section {
-  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
-  animation-delay: 80ms;
-}
+/* ============================================================
+ * 5. Card 玻璃卡片 — 通用容器
+ * ============================================================ */
 
-.search-combo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 8px 8px 8px 16px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-1);
-  border-radius: var(--radius-xl);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  box-shadow: var(--shadow-md);
-  transition: border-color var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out);
-}
-
-.search-combo:focus-within {
-  border-color: var(--theme-accent);
-  box-shadow: 0 0 0 4px var(--theme-accent-soft), var(--shadow-md);
-}
-
-.search-combo__icon {
-  color: var(--color-text-3);
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-}
-
-.search-combo__input {
-  flex: 1;
-  min-width: 0;
-  height: 36px;
-  font-size: var(--fs-lg);
-  color: var(--color-text-1);
-  background: transparent;
-}
-
-.search-combo__divider {
-  width: 1px;
-  height: 24px;
-  background: var(--color-border-2);
-  flex-shrink: 0;
-}
-
-.search-error {
-  margin-top: var(--space-2);
-  padding: 0 var(--space-4);
-  font-size: var(--fs-sm);
-  color: var(--color-danger);
-  display: none;
-}
-.search-error.visible {
-  display: block;
-  animation: fade-in-up var(--dur-base) var(--ease-out) both;
-}
-
-/* =============================================================
- * 4. Card — 基础玻璃卡片（所有 panel / metric / hero 的基础）
- * ============================================================= */
 .card {
   position: relative;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-1);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
   border-radius: var(--radius-2xl);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  padding: var(--space-5);
+  backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur) var(--ease-out),
+              box-shadow var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out);
+}
+
+.card:hover {
+  border-color: var(--border-3);
   box-shadow: var(--shadow-md);
-  transition: transform var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out);
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    transparent 40%,
-    transparent 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* =============================================================
- * 5. Hero — 主卡片
- * ============================================================= */
-.hero {
-  padding: clamp(20px, 3.4vw, 36px);
-  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
-  animation-delay: 120ms;
-  overflow: hidden;
-}
-
-/* Hero 的顶部渐变高光 */
-.hero::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20%;
-  right: 20%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--theme-accent),
-    transparent
-  );
-  opacity: 0.5;
-}
-
-.hero__grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: var(--space-7);
+/* --- Card Header：Chip + 辅助文字 --- */
+.card__head {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
-.hero__primary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-full);
 }
 
-.hero__eyebrow {
-  display: flex;
+.chip--ghost {
+  background: var(--surface-3);
+  border: 1px solid var(--border-1);
+  color: var(--text-tertiary);
+}
+
+.card__hint {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.card__hint--title {
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.005em;
+}
+
+.card__hint--muted {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+}
+
+/* --- Card 头部的图例（图表卡片） --- */
+.card__legend {
+  display: inline-flex;
+  gap: var(--space-4);
+}
+
+.legend {
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  flex-wrap: wrap;
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
 }
 
-.hero__city {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text-1);
-}
-
-.hero__dot {
-  width: 4px;
-  height: 4px;
+.legend__dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--color-text-4);
   display: inline-block;
-  margin: 0 4px;
 }
 
-.hero__date {
-  font-size: var(--fs-base);
-  color: var(--color-text-3);
-  font-variant-numeric: tabular-nums;
+.legend__dot--warm { background: var(--status-sun); box-shadow: 0 0 0 3px rgba(232, 200, 135, 0.18); }
+.legend__dot--cool { background: var(--accent); box-shadow: 0 0 0 3px rgba(122, 184, 217, 0.18); }
+
+/* ============================================================
+ * 6. Hero 主卡片 — 实时核心温度
+ * ============================================================ */
+
+.card--hero { padding: var(--space-6); }
+
+.hero-body {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-3) 0 var(--space-6);
+  border-bottom: 1px solid var(--border-1);
 }
 
-.hero__temp-wrap {
+@media (max-width: 720px) {
+  .hero-body {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
+  }
+}
+
+.hero-body__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hero-temp {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-5);
+  gap: 8px;
+  line-height: 0.95;
 }
 
-.hero__temp {
-  font-size: var(--fs-6xl);
-  font-weight: var(--fw-light);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text-1);
+.hero-temp__num {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  font-size: clamp(72px, 10vw, 120px);
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.65) 100%);
+  /* 细腻的微渐变光感 */
+  background: linear-gradient(180deg, var(--text-primary) 0%, rgba(255, 255, 255, 0.55) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.hero__desc-block {
+.hero-temp__unit {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  color: var(--text-tertiary);
+  margin-top: 12px;
+  letter-spacing: 0.02em;
+}
+
+.hero-meta {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: calc(var(--fs-6xl) * 0.25);
   gap: var(--space-2);
 }
 
-.hero__desc {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-medium);
-  color: var(--color-text-1);
-}
-
-.hero__feels {
-  font-size: var(--fs-sm);
-  color: var(--color-text-3);
-}
-
-.hero__meta {
+.hero-meta__row {
   display: inline-flex;
-  padding: 10px 16px;
-  background: var(--color-surface-3);
-  border: 1px solid var(--color-border-1);
-  border-radius: var(--radius-full);
-  align-self: flex-start;
+  align-items: center;
   gap: var(--space-3);
+  padding: 8px 0;
 }
 
-.hero__meta-item {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-
-.hero__meta-label {
+.hero-meta__label {
   font-size: var(--fs-xs);
-  color: var(--color-text-3);
-  letter-spacing: var(--tracking-wide);
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  min-width: 68px;
 }
 
-.hero__meta-value {
-  font-size: var(--fs-base);
-  font-weight: var(--fw-medium);
-  color: var(--color-text-1);
+.hero-meta__value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Hero 右侧：图标 + 日出日落 ---------- */
-.hero__secondary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  align-items: center;
-}
-
-.hero__icon {
-  width: clamp(140px, 22vw, 220px);
+/* --- Hero 右侧：动态 SVG 图标 --- */
+.hero-body__icon {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  animation: hero-soft-bob 4.5s ease-in-out infinite;
+  margin: 0 auto;
 }
 
-.hero__icon svg {
+.hero-body__icon svg {
   width: 100%;
   height: 100%;
+  filter: drop-shadow(0 20px 50px rgba(122, 184, 217, 0.2));
 }
 
-/* 日出日落轨道 */
-.hero__sun-track {
-  width: 100%;
+/* --- 日出日落小轨道 --- */
+.hero-sun {
   display: grid;
-  grid-template-columns: 1fr 1.6fr 1fr;
-  align-items: center;
+  grid-template-columns: 1fr 2fr 1fr;
   gap: var(--space-3);
-  padding: 14px 18px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-1);
-  border-radius: var(--radius-xl);
+  align-items: center;
+  padding-top: var(--space-5);
 }
 
-.hero__sun-col {
+.hero-sun__col {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.hero__sun-col--end {
-  align-items: flex-end;
-  text-align: right;
-}
+.hero-sun__col--end { align-items: flex-end; text-align: right; }
 
-.hero__sun-label {
-  font-size: var(--fs-xs);
-  color: var(--color-text-3);
-  letter-spacing: var(--tracking-wide);
+.hero-sun__label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.hero__sun-value {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-medium);
+.hero-sun__value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
-  color: var(--color-text-1);
 }
 
-.hero__sun-graphic {
+.hero-sun__track {
   width: 100%;
-  color: var(--theme-accent);
-  opacity: 0.9;
+  height: 40px;
+  color: var(--accent);
+  opacity: 0.75;
 }
 
-.hero__sun-graphic svg {
-  width: 100%;
-  height: 44px;
-  overflow: visible;
-}
+/* ============================================================
+ * 7. Metrics 侧面板 — 气象详情列表
+ * ============================================================ */
 
-.hero__sun-ball {
-  filter: drop-shadow(0 0 6px var(--theme-accent));
-}
+.card--metrics { padding: var(--space-5); }
 
-/* =============================================================
- * 6. Metrics — 6 个指标卡
- * ============================================================= */
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
-  animation-delay: 200ms;
+.metric-list {
+  display: flex;
+  flex-direction: column;
 }
 
 .metric {
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-1);
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.metric__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
+.metric:last-child { border-bottom: none; }
+.metric:hover { background: linear-gradient(90deg, transparent, var(--surface-1), transparent); }
 
 .metric__label {
-  font-size: var(--fs-base);
-  color: var(--color-text-2);
-  font-weight: var(--fw-medium);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
 }
 
-.metric__chip {
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--color-text-3);
-  letter-spacing: var(--tracking-widest);
-  padding: 3px 8px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-1);
-  border-radius: var(--radius-full);
+.metric__icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .metric__value {
-  font-size: var(--fs-4xl);
-  font-weight: var(--fw-light);
-  line-height: 1;
-  color: var(--color-text-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xl);
+  font-weight: 300;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  letter-spacing: var(--tracking-tight);
 }
 
-.metric__unit {
-  font-size: var(--fs-lg);
-  color: var(--color-text-3);
-  font-weight: var(--fw-regular);
-  margin-left: 2px;
+.metric__value small {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  margin-left: 4px;
+  font-weight: 400;
 }
 
 .metric__sub {
-  font-size: var(--fs-sm);
-  color: var(--color-text-3);
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  letter-spacing: 0.02em;
 }
 
+/* --- 进度条（湿度/气压/能见度/云量） --- */
 .metric__bar {
-  height: 4px;
-  background: var(--color-surface-3);
+  height: 3px;
+  background: var(--border-1);
   border-radius: var(--radius-full);
   overflow: hidden;
-  margin-top: auto;
+  width: 100%;
+  max-width: 220px;
 }
 
 .metric__bar-fill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%);
+  width: 0;
   border-radius: inherit;
-  transition: width var(--dur-slower) var(--ease-out);
-  animation: bar-fill var(--dur-slower) var(--ease-out) both;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong) 100%);
+  transition: width var(--dur-xl) var(--ease-out);
 }
 
-/* =============================================================
- * 7. Panel — 预报区的外层卡片
- * ============================================================= */
-.panel {
-  padding: var(--space-6);
-  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
-  animation-delay: 260ms;
+/* ============================================================
+ * 8. 图表（Canvas 容器）
+ * ============================================================ */
+
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  padding: var(--space-2) 0;
 }
 
-.panel__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-5);
-  gap: var(--space-3);
-}
-
-.panel__title {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-semibold);
-  color: var(--color-text-1);
-  letter-spacing: var(--tracking-tight);
-}
-
-.panel__sub {
-  font-size: var(--fs-sm);
-  color: var(--color-text-3);
-  margin-top: 4px;
-}
-
-.panel__badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: var(--tracking-widest);
-  color: var(--theme-accent);
-  padding: 6px 12px;
-  background: var(--theme-accent-soft);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-full);
-}
-
-/* =============================================================
- * 8. Hourly — 24 小时预报（横向滚动卡片）
- * ============================================================= */
-.hourly {
-  display: flex;
-  gap: var(--space-2);
-  overflow-x: auto;
-  padding-bottom: 4px;
-  margin: 0 -4px;
-  padding-left: 4px;
-  padding-right: 4px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.hourly-item {
-  flex: 0 0 auto;
-  width: 78px;
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 14px 10px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-1);
-  border-radius: var(--radius-xl);
-  scroll-snap-align: start;
-  transition: transform var(--dur-base) var(--ease-out),
-    background-color var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out);
-}
-
-.hourly-item:hover {
-  transform: translateY(-2px);
-  background: var(--color-surface-2);
-  border-color: var(--color-border-2);
-}
-
-.hourly-hour {
-  font-size: var(--fs-xs);
-  color: var(--color-text-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.hourly-icon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hourly-icon svg {
+.chart-canvas {
   width: 100%;
   height: 100%;
+  display: block;
 }
 
-.hourly-temp {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
-  color: var(--color-text-1);
-  font-variant-numeric: tabular-nums;
+@media (max-width: 640px) {
+  .chart-wrap { height: 200px; }
 }
 
-.hourly-pop {
-  font-size: 11px;
-  color: var(--theme-accent);
-  font-family: var(--font-mono);
-  padding: 2px 6px;
-  background: var(--theme-accent-soft);
-  border-radius: var(--radius-sm);
-}
+/* ============================================================
+ * 9. 7 天预报列表
+ * ============================================================ */
 
-/* =============================================================
- * 9. Daily — 7 天预报（列表式 + 温度条）
- * ============================================================= */
-.daily {
+.daily-list {
   display: flex;
   flex-direction: column;
 }
 
 .daily-row {
   display: grid;
-  grid-template-columns: 1.1fr 44px 1.5fr 2fr 1fr;
+  grid-template-columns: 80px 36px 1fr 180px 60px;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   padding: 14px 0;
-  border-bottom: 1px solid var(--color-border-1);
-  transition: background-color var(--dur-base) var(--ease-out);
+  border-bottom: 1px solid var(--border-1);
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.daily-row:last-child {
-  border-bottom: none;
-}
-
+.daily-row:last-child { border-bottom: none; }
 .daily-row:hover {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.03),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, var(--surface-1), transparent);
 }
 
 .daily-day {
   font-size: var(--fs-base);
-  color: var(--color-text-1);
   font-weight: var(--fw-medium);
+  color: var(--text-primary);
 }
 
 .daily-icon {
   width: 36px;
   height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.daily-icon svg {
-  width: 100%;
-  height: 100%;
-}
+
+.daily-icon svg { width: 100%; height: 100%; }
 
 .daily-desc {
   font-size: var(--fs-sm);
-  color: var(--color-text-3);
+  color: var(--text-secondary);
 }
 
-.daily-temp {
+/* 温度条：min ---[====]--- max */
+.daily-temp-range {
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
 
-.daily-min {
-  color: var(--color-text-3);
+.daily-temp-min {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
-  font-size: var(--fs-base);
   min-width: 34px;
   text-align: right;
 }
 
-.daily-max {
-  color: var(--color-text-1);
-  font-weight: var(--fw-medium);
+.daily-temp-bar {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  background: var(--border-1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.daily-temp-bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--status-sun) 100%);
+  transition: width var(--dur-xl) var(--ease-out);
+}
+
+.daily-temp-max {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
-  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
   min-width: 34px;
 }
 
-.daily-bar {
-  flex: 1;
-  height: 6px;
-  background: var(--color-surface-3);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  position: relative;
-}
-
-.daily-bar span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--theme-accent) 0%,
-    var(--theme-accent-2) 50%,
-    var(--color-warning) 100%
-  );
-  border-radius: inherit;
-  animation: bar-fill var(--dur-slower) var(--ease-out) both;
-}
-
 .daily-pop {
-  font-size: var(--fs-sm);
-  color: var(--theme-accent);
-  font-variant-numeric: tabular-nums;
   font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-/* =============================================================
- * 10. Footer
- * ============================================================= */
+@media (max-width: 720px) {
+  .daily-row {
+    grid-template-columns: 60px 32px 1fr 140px 50px;
+    gap: var(--space-3);
+  }
+  .daily-desc { display: none; }
+}
+
+/* ============================================================
+ * 10. Hourly 横向滚动小时卡片
+ * ============================================================ */
+
+.hourly-scroll {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: var(--space-1) var(--space-1) var(--space-2);
+  margin: 0 calc(var(--space-1) * -1);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hourly-cell {
+  flex: 0 0 auto;
+  width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 14px 10px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  scroll-snap-align: start;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+
+.hourly-cell:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  transform: translateY(-2px);
+}
+
+.hourly-cell--now {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.hourly-hour {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.hourly-cell--now .hourly-hour {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+.hourly-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hourly-icon svg { width: 100%; height: 100%; }
+
+.hourly-temp {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: 400;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hourly-pop-flag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 6px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+ * 11. 页脚
+ * ============================================================ */
+
 .app-footer {
   display: flex;
   align-items: center;
@@ -772,89 +800,153 @@
   gap: var(--space-2);
   padding-top: var(--space-4);
   font-size: var(--fs-xs);
-  color: var(--color-text-4);
-  letter-spacing: var(--tracking-wide);
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
-.app-footer__dot {
-  color: var(--color-text-4);
+.app-footer__sep { color: var(--text-quaternary); }
+
+.app-footer__muted { color: var(--text-quaternary); }
+
+/* ============================================================
+ * 12. Toast 错误提示
+ * ============================================================ */
+
+.toast-error {
+  position: fixed;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 12px 20px;
+  background: rgba(20, 12, 12, 0.78);
+  color: #f1d6d6;
+  border: 1px solid rgba(196, 122, 122, 0.3);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease-out),
+              transform var(--dur) var(--ease-out);
+  z-index: var(--z-modal);
+  max-width: 86vw;
+  text-align: center;
 }
 
-/* =============================================================
- * 11. 响应式 — 平板 / 手机
- * ============================================================= */
-
-/* 平板：metrics 变 2 列 */
-@media (max-width: 900px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-  }
-  .hero__secondary {
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    gap: var(--space-5);
-  }
-  .hero__icon {
-    width: clamp(120px, 30vw, 180px);
-  }
-  .metrics {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.toast-error.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-/* 手机：单列 + 紧凑间距 */
+/* ============================================================
+ * 13. 入场动画（JS 可按需添加）
+ * ============================================================ */
+
+.fade-in {
+  animation: fade-in-up var(--dur-slow) var(--ease-out) both;
+}
+
+@keyframes fade-in-up {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+ * 14. 响应式（移动端压缩）
+ * ============================================================ */
+
 @media (max-width: 640px) {
-  .app {
-    gap: var(--space-4);
-  }
-  .app-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .search-combo {
-    flex-wrap: wrap;
-    padding: 8px;
-  }
-  .search-combo__input {
-    order: 1;
-    width: 100%;
-    min-width: 100%;
-    padding: 8px 0;
-  }
-  .search-combo .btn {
-    order: 2;
-    flex: 1;
-  }
-  .hero {
-    padding: var(--space-5);
-  }
-  .hero__sun-track {
-    grid-template-columns: 1fr;
+  .app-header { flex-direction: column; align-items: flex-start; }
+  .brand-sub { display: none; }
+  .search-bar { width: 100%; }
+  .search-bar__input { min-width: 0; width: 100%; max-width: none; }
+  .card { padding: var(--space-4); border-radius: var(--radius-xl); }
+  .card--hero { padding: var(--space-4); }
+  .card__head { margin-bottom: var(--space-4); }
+  .metric {
+    grid-template-columns: 96px 1fr;
     gap: var(--space-3);
-  }
-  .hero__sun-col--end {
-    align-items: flex-start;
-    text-align: left;
-  }
-  .metrics {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
-  }
-  .panel {
-    padding: var(--space-5);
-  }
-  .panel__head {
-    margin-bottom: var(--space-4);
-  }
-  .daily-row {
-    grid-template-columns: 1fr 36px 2.5fr;
-    gap: var(--space-2);
     padding: 12px 0;
   }
-  .daily-desc,
-  .daily-pop {
-    display: none;
-  }
+  .metric__bar { max-width: 100%; }
+  .hero-sun { grid-template-columns: 1fr; text-align: left; }
+  .hero-sun__col--end { align-items: flex-start; text-align: left; }
+  .breadcrumb { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .breadcrumb__left { flex-wrap: wrap; }
+}
+
+/* ============================================================
+ * 15. 天气图标动画（由 WeatherIcon 组件控制）
+ * ============================================================ */
+
+.weather-icon--sunny .sun-core {
+  animation: weather-pulse 4s ease-in-out infinite;
+  transform-origin: center;
+}
+.weather-icon--sunny .sun-rays {
+  animation: weather-rotate 40s linear infinite;
+  transform-origin: center;
+}
+
+.weather-icon--clear-night .moon {
+  animation: weather-pulse 5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.weather-icon--partly-cloudy .cloud,
+.weather-icon--cloudy .cloud,
+.weather-icon--fog .cloud {
+  animation: cloud-drift 6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.weather-icon--rain .drop {
+  animation: drop-fall 1.6s ease-in infinite;
+  transform-origin: center;
+}
+.weather-icon--rain .drop:nth-child(2) { animation-delay: 0.3s; }
+.weather-icon--rain .drop:nth-child(3) { animation-delay: 0.6s; }
+
+.weather-icon--snow .flake {
+  animation: flake-fall 3.2s linear infinite;
+  transform-origin: center;
+}
+.weather-icon--snow .flake:nth-child(2) { animation-delay: 0.8s; }
+.weather-icon--snow .flake:nth-child(3) { animation-delay: 1.6s; }
+
+.weather-icon--thunder .bolt {
+  animation: thunder-blink 2.4s steps(1, end) infinite;
+  transform-origin: center;
+}
+
+@keyframes weather-pulse {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+@keyframes weather-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes cloud-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+@keyframes drop-fall {
+  0% { transform: translateY(-6px); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(18px); opacity: 0; }
+}
+@keyframes flake-fall {
+  0% { transform: translateY(-6px) rotate(0deg); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(22px) rotate(180deg); opacity: 0; }
+}
+@keyframes thunder-blink {
+  0%, 55%, 100% { opacity: 0.1; }
+  56% { opacity: 1; }
+  65% { opacity: 0.6; }
+  68% { opacity: 1; }
 }

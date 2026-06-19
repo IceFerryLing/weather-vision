@@ -1,145 +1,213 @@
 /* =============================================================
- * variables.css — Design Tokens v2.0
- * 参考：shadcn/ui · Tailwind CSS · Apple HIG · Linear
+ * variables.css — Weather Vision Design Tokens v3.0
+ * 参考：Apple HIG · Linear · Arc · IBM Design Language
+ * 规范：低饱和 · 玻璃拟态 · 三层景深
  * ============================================================= */
 
 :root {
-  /* -----------------------------------------------------------
-   * 1. 间距 — 模块化 4px 刻度
-   * ----------------------------------------------------------- */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-7: 32px;
-  --space-8: 40px;
-  --space-9: 48px;
-  --space-10: 64px;
 
-  /* -----------------------------------------------------------
-   * 2. 圆角 — 现代设计偏好大圆角
-   * ----------------------------------------------------------- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-2xl: 28px;
-  --radius-full: 999px;
+  /* ============================================================
+   * 1. 色彩系统
+   * ============================================================ */
 
-  /* -----------------------------------------------------------
-   * 3. 字体 — Inter（拉丁）+ Noto Sans SC（中文）+ JetBrains Mono
-   * ----------------------------------------------------------- */
-  --font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC',
-    'Microsoft YaHei', 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+  /* 1.1 主色 — 低饱和静谧科技蓝 */
+  --color-brand-50:  #f1f5f9;
+  --color-brand-100: #e2e8f0;
+  --color-brand-200: #cbd5e1;
+  --color-brand-300: #94a3b8;
+  --color-brand-400: #64748b;
+  --color-brand-500: #475569;
+  --color-brand-600: #334155;
+  --color-brand-700: #1e293b;
 
-  /* 字号：12 / 13 / 14 / 16 / 18 / 22 / 28 / 36 / 56 / 96 */
-  --fs-xs: 12px;
-  --fs-sm: 13px;
+  /* 品牌色（低饱和科技蓝） */
+  --accent:        #7ab8d9;   /* 主强调色 */
+  --accent-strong: #4a9cc7;   /* hover/焦点 */
+  --accent-soft:   rgba(122, 184, 217, 0.14);
+  --accent-glow:   rgba(122, 184, 217, 0.22);
+
+  /* 1.2 状态色 — 低饱和 */
+  --status-sun:    #e8c887;   /* 暖黄 */
+  --status-sun-soft: rgba(232, 200, 135, 0.12);
+  --status-rain:   #8ab0cf;   /* 冷蓝灰 */
+  --status-rain-soft: rgba(138, 176, 207, 0.12);
+  --status-snow:   #b8c8d4;   /* 浅冷灰 */
+  --status-snow-soft: rgba(184, 200, 212, 0.12);
+  --status-thunder: #c897c0;  /* 低饱和紫 */
+  --status-thunder-soft: rgba(200, 151, 192, 0.12);
+  --status-warn:   #d9a766;   /* 柔和警示 */
+  --status-warn-soft: rgba(217, 167, 102, 0.14);
+  --status-danger: #c47a7a;   /* 柔和危险 */
+  --status-danger-soft: rgba(196, 122, 122, 0.14);
+
+  /* 1.3 中性色（文字 & 背景）— 深色优先 */
+  --surface-bg:      #0a0d14;   /* 最深层 */
+  --surface-1:       rgba(255, 255, 255, 0.03);
+  --surface-2:       rgba(255, 255, 255, 0.05);
+  --surface-3:       rgba(255, 255, 255, 0.08);
+  --surface-hover:   rgba(255, 255, 255, 0.11);
+  --surface-active:  rgba(255, 255, 255, 0.15);
+
+  --border-1: rgba(255, 255, 255, 0.06);
+  --border-2: rgba(255, 255, 255, 0.10);
+  --border-3: rgba(255, 255, 255, 0.16);
+
+  /* 1.4 文字 — 三级灰度 */
+  --text-primary:    rgba(255, 255, 255, 0.92);   /* 主标题/数值 */
+  --text-secondary:  rgba(255, 255, 255, 0.62);   /* 次级描述 */
+  --text-tertiary:   rgba(255, 255, 255, 0.40);   /* 小字/备注 */
+  --text-quaternary: rgba(255, 255, 255, 0.24);   /* 最弱化 */
+
+  /* 1.5 主题背景渐变（由 JS 根据天气设置 CSS 变量） */
+  --theme-bg-1: #0a0d14;   /* 默认：深色 */
+  --theme-bg-2: #121826;
+  --theme-bg-3: #1d2636;
+  --theme-accent: var(--accent);
+  --theme-accent-2: var(--accent-strong);
+  --theme-accent-soft: var(--accent-soft);
+
+  /* ============================================================
+   * 2. 排版系统
+   * ============================================================ */
+
+  /* 字体双体系 */
+  --font-sans:  'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+                'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  --font-mono:  'JetBrains Mono', 'SF Mono', ui-monospace, 'Menlo', monospace;
+
+  /* 字号阶梯（12/13/14/16/18/22/28/36/56/80/120） */
+  --fs-xs:   12px;
+  --fs-sm:   13px;
   --fs-base: 14px;
-  --fs-lg: 16px;
-  --fs-xl: 18px;
-  --fs-2xl: 22px;
-  --fs-3xl: 28px;
-  --fs-4xl: 36px;
-  --fs-5xl: 56px;
-  --fs-6xl: 96px;
-
-  /* 行高 */
-  --lh-tight: 1.15;
-  --lh-snug: 1.35;
-  --lh-normal: 1.55;
+  --fs-lg:   16px;
+  --fs-xl:   18px;
+  --fs-2xl:  22px;
+  --fs-3xl:  28px;
+  --fs-4xl:  36px;
+  --fs-5xl:  56px;
+  --fs-6xl:  80px;
+  --fs-7xl:  120px;
 
   /* 字重 */
-  --fw-light: 300;
+  --fw-thin:    100;
+  --fw-light:   300;
   --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
-  --fw-bold: 700;
+  --fw-medium:  500;
+  --fw-semibold: 500;   /* 克制：保持较细字重 */
 
-  /* 字间距 */
-  --tracking-tight: -0.02em;
-  --tracking-normal: 0;
-  --tracking-wide: 0.04em;
-  --tracking-widest: 0.08em;
+  /* 行高 */
+  --lh-tight:   1.15;
+  --lh-snug:    1.35;
+  --lh-normal:  1.55;
 
-  /* -----------------------------------------------------------
-   * 4. 色彩 — 中性色 + 主题色 + 功能色
-   * ----------------------------------------------------------- */
+  /* 字距 */
+  --ls-tight:  -0.02em;
+  --ls-normal:  0;
+  --ls-wide:    0.06em;    /* 英文标签 */
+  --ls-widest:  0.14em;   /* 大写小字 */
 
-  /* 4.1 中性色（深色优先，玻璃拟态） */
-  --color-bg: #070b18;           /* 最深的背景 */
-  --color-bg-elevated: #0d1224;  /* 页面底色 */
-  --color-surface-1: rgba(255, 255, 255, 0.035);  /* 最轻微的玻璃 */
-  --color-surface-2: rgba(255, 255, 255, 0.06);   /* 普通玻璃 */
-  --color-surface-3: rgba(255, 255, 255, 0.09);   /* 高一点的玻璃 */
-  --color-surface-hover: rgba(255, 255, 255, 0.11);
+  /* ============================================================
+   * 3. 间距系统（8px 基数）
+   * ============================================================ */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  48px;
+  --space-10: 64px;
+  --space-11: 80px;
 
-  --color-border-1: rgba(255, 255, 255, 0.08);
-  --color-border-2: rgba(255, 255, 255, 0.12);
-  --color-border-3: rgba(255, 255, 255, 0.18);
+  /* ============================================================
+   * 4. 圆角系统 — 克制的大圆角
+   * ============================================================ */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   18px;
+  --radius-2xl:  24px;
+  --radius-3xl:  32px;
+  --radius-full: 9999px;
 
-  --color-text-1: #f8fafc;       /* 主文字 */
-  --color-text-2: rgba(248, 250, 252, 0.72); /* 次文字 */
-  --color-text-3: rgba(248, 250, 252, 0.48); /* 辅助文字 */
-  --color-text-4: rgba(248, 250, 252, 0.32); /* 弱化文字 */
+  /* ============================================================
+   * 5. 阴影 — 多层柔和阴影
+   * ============================================================ */
+  --shadow-xs:  0 1px 2px rgba(10, 13, 20, 0.35);
+  --shadow-sm:  0 2px 6px rgba(10, 13, 20, 0.35),
+                0 1px 2px rgba(10, 13, 20, 0.20);
+  --shadow-md:  0 8px 24px -6px rgba(10, 13, 20, 0.45),
+                0 2px 6px -2px rgba(10, 13, 20, 0.25);
+  --shadow-lg:  0 18px 48px -10px rgba(10, 13, 20, 0.55),
+                0 6px 14px -4px rgba(10, 13, 20, 0.30);
+  --shadow-xl:  0 32px 64px -12px rgba(10, 13, 20, 0.55),
+                0 8px 20px -6px rgba(10, 13, 20, 0.30);
 
-  /* 4.2 主题色 — 由 JS 根据天气类型动态设置 */
-  --theme-accent: #60a5fa;            /* 主强调色（蓝） */
-  --theme-accent-2: #a78bfa;          /* 次强调色（紫） */
-  --theme-accent-soft: rgba(96, 165, 250, 0.18);
-  --theme-bg-1: #0f172a;
-  --theme-bg-2: #1e1b4b;
-  --theme-bg-3: #4c1d95;
+  /* 聚焦光晕 */
+  --shadow-focus: 0 0 0 3px var(--accent-soft);
 
-  /* 4.3 功能色 */
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-danger: #f87171;
-  --color-info: #60a5fa;
+  /* ============================================================
+   * 6. 玻璃效果 — backdrop filter
+   * ============================================================ */
+  --glass-blur:    16px;
+  --glass-blur-lg: 28px;
+  --glass-saturate: 140%;
 
-  /* -----------------------------------------------------------
-   * 5. 阴影 — 多层柔和阴影模拟真实光照
-   * ----------------------------------------------------------- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 1px rgba(0, 0, 0, 0.15);
-  --shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.45), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 4px 10px -2px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 40px -10px var(--theme-accent), 0 0 20px -5px var(--theme-accent-2);
-
-  /* -----------------------------------------------------------
-   * 6. 玻璃效果 — backdrop-filter
-   * ----------------------------------------------------------- */
-  --glass-blur: 14px;
-  --glass-blur-strong: 22px;
-  --glass-saturation: 160%;
-
-  /* -----------------------------------------------------------
-   * 7. 动效 — Material 风格的标准曲线
-   * ----------------------------------------------------------- */
+  /* ============================================================
+   * 7. 动效 — 轻量化、标准缓动曲线
+   * ============================================================ */
   --dur-fast: 120ms;
-  --dur-base: 200ms;
+  --dur:      220ms;      /* 标准 0.3s 级 */
   --dur-slow: 360ms;
-  --dur-slower: 520ms;
+  --dur-xl:   520ms;
 
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* -----------------------------------------------------------
-   * 8. 布局
-   * ----------------------------------------------------------- */
-  --container-max: 1180px;
-  --container-pad: clamp(16px, 3vw, 40px);
+  /* ============================================================
+   * 8. 布局 — 容器/栅格
+   * ============================================================ */
+  --container-max: 1440px;
+  --container-pad: clamp(16px, 2.4vw, 32px);
+
+  /* z-index 分层（避免魔法数字） */
+  --z-bg:       0;
+  --z-surface:  1;
+  --z-content:  10;
+  --z-floating: 50;
+  --z-modal:    100;
 }
 
-/* 响应式：移动端字号略小 */
-@media (max-width: 640px) {
+/* =============================================================
+ * 9. 响应式 — 移动端点调整
+ * ============================================================= */
+@media (max-width: 900px) {
   :root {
     --fs-5xl: 44px;
-    --fs-6xl: 72px;
-    --fs-4xl: 30px;
-    --fs-3xl: 24px;
+    --fs-6xl: 64px;
+    --fs-7xl: 88px;
+  }
+}
+
+@media (max-width: 560px) {
+  :root {
+    --fs-5xl: 36px;
+    --fs-6xl: 52px;
+    --fs-7xl: 68px;
+    --container-pad: 12px;
+  }
+}
+
+/* =============================================================
+ * 10. 打印 / Reduce Motion 友好
+ * ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur:      0ms;
+    --dur-slow: 0ms;
+    --dur-xl:   0ms;
   }
 }
