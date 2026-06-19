@@ -39,7 +39,7 @@ function queryDOM() {
   el.metricUV = $('metric-uv');
   el.metricCloud = $('metric-cloud');
   el.metricUVLevel = $('metric-uv-level');
-  el.metricWindSub = document.querySelector('[data-metric-wind]');
+  el.metricWindSub = $('metric-wind-sub');
 
   el.barHumidity = $('bar-humidity');
   el.barPressure = $('bar-pressure');
@@ -96,13 +96,14 @@ function animateNumber(node, target, { duration = 600 } = {}) {
 function setTheme(type) {
   const theme = WEATHER_THEMES[type] || WEATHER_THEMES.cloudy;
   const root = document.documentElement;
-  root.style.setProperty('--theme-accent', theme.accent);
   root.style.setProperty('--accent', theme.accent);
   root.style.setProperty('--accent-strong', theme.accentStrong);
-  root.style.setProperty('--status-sun', theme.accent);   // 曲线色呼应主题
-  root.style.setProperty('--theme-bg-1', theme.bg1);
-  root.style.setProperty('--theme-bg-2', theme.bg2);
-  root.style.setProperty('--theme-bg-3', theme.bg3);
+  // 背景色（柔和、低饱和）
+  if (theme.bg1) root.style.setProperty('--bg-page-1', theme.bg1);
+  if (theme.bg2) root.style.setProperty('--bg-page-2', theme.bg2);
+  if (theme.bg3) root.style.setProperty('--bg-page-3', theme.bg3);
+  // 给 body 添加天气类型，驱动背景氛围层
+  document.body.setAttribute('data-weather', type);
 }
 
 /* ============================================================
@@ -165,9 +166,17 @@ function renderHourly(data) {
 
 function renderDaily(data) {
   if (!el.daily) return;
-  el.daily.innerHTML = data.daily
+  const daily = data.daily || [];
+  const tMin = daily.length ? Math.min(...daily.map((d) => d.tempMin)) : 0;
+  const tMax = daily.length ? Math.max(...daily.map((d) => d.tempMax)) : 0;
+  const range = (tMax - tMin) || 1;
+
+  el.daily.innerHTML = daily
     .map(
-      (d) => `
+      (d) => {
+        const leftPct = ((d.tempMin - tMin) / range) * 100;
+        const widthPct = ((d.tempMax - d.tempMin) / range) * 100;
+        return `
     <div class="daily-row">
       <span class="daily-day">${d.day}</span>
       <span class="daily-icon">${createIcon(d.type, { size: 36 })}</span>
@@ -175,18 +184,21 @@ function renderDaily(data) {
       <span class="daily-temp-range">
         <span class="daily-temp-min">${d.tempMin}°</span>
         <span class="daily-temp-bar">
-          <span class="daily-temp-bar-fill"></span>
+          <span class="daily-temp-bar-fill" style="left:${leftPct}%; width:${widthPct}%"></span>
         </span>
         <span class="daily-temp-max">${d.tempMax}°</span>
       </span>
-      <span class="daily-pop">${d.pop}mm</span>
-    </div>`,
+      <span class="daily-pop">${d.pop} mm</span>
+    </div>`;
+      },
     )
     .join('');
 }
 
 function renderChart(data) {
   if (!el.chartCanvas || !data || !data.hourly || data.hourly.length < 2) return;
+  // 缓存最近一次 data，用于窗口 resize 时重绘
+  window._lastWeatherData = data;
   const temps = data.hourly.map((h) => h.temp);
   const pops = data.hourly.map((h) => h.pop);
   const labels = data.hourly.map((h) => h.label);
