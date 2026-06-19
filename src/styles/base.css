@@ -1,19 +1,12 @@
-/**
- * base.css
- * ------------------------------------------------------------------
- * CSS Reset + 全局排版 + 基础工具类。
- * 目标：抹平浏览器默认差异，提供可复用的原子 class。
- * ------------------------------------------------------------------
- */
+/* =============================================================
+ * base.css — 重置 + 排版 + 背景氛围
+ * ============================================================= */
 
-/* -------- CSS Reset（改良版） -------- */
+/* ---------- CSS Reset（精简版） ---------- */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-* {
   margin: 0;
   padding: 0;
 }
@@ -24,48 +17,36 @@ body {
 }
 
 html {
-  font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-base);
-  font-weight: var(--fw-regular);
-  line-height: var(--lh-base);
-  color: var(--text-1);
-  background: var(--color-bg-1);
+  line-height: var(--lh-normal);
+  color: var(--color-text-1);
+  background: var(--color-bg);
   overflow-x: hidden;
   min-height: 100vh;
   position: relative;
 }
 
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
+/* 标题默认 */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
 }
 
-input,
-button,
-textarea,
-select {
+/* 重置表单 */
+button, input {
   font: inherit;
   color: inherit;
   background: none;
   border: none;
   outline: none;
-}
-
-input::-webkit-search-decoration,
-input::-webkit-search-cancel-button {
-  display: none;
 }
 
 button {
@@ -74,141 +55,174 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  overflow-wrap: break-word;
+input::placeholder {
+  color: var(--color-text-3);
 }
 
-h1,
-h2,
-h3,
-h4 {
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--letter-spacing-tight);
-  line-height: var(--lh-tight);
+/* SVG 默认 inline */
+svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
 }
 
-/* 等宽字体类 */
-.mono {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+/* 选中样式 */
+::selection {
+  background: var(--theme-accent-soft);
+  color: var(--color-text-1);
 }
 
-/* 数字优化（对齐，便于数字动画） */
-.num,
-[data-animate='number'] {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
+/* 滚动条（现代浏览器） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
-
-/* 滚动条美化（webkit） */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(91, 157, 255, 0.18);
-  border-radius: var(--radius-pill);
-  border: 2px solid transparent;
-  background-clip: padding-box;
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(91, 157, 255, 0.32);
-  background-clip: padding-box;
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* 选中文本高亮 */
-::selection {
-  background: rgba(91, 157, 255, 0.35);
-  color: var(--text-1);
+/* =============================================================
+ * 背景层 — 径向光晕 + 网格 + 粒子 + 噪点
+ * ============================================================= */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at top, var(--theme-bg-2) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom, var(--theme-bg-3) 0%, transparent 60%),
+    var(--theme-bg-1);
+  transition: background var(--dur-slower) var(--ease-out);
 }
 
-/* -------- 玻璃态卡片基础类（可组合） -------- */
-.glass {
-  background: var(--surface-2);
-  border: 1px solid var(--border-1);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+/* 径向光球 — 制造氛围 */
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: orb-float 18s ease-in-out infinite;
 }
 
-.glass-strong {
-  background: var(--surface-3);
-  border: 1px solid var(--border-2);
-  backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturation));
-  -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturation));
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+.bg-orb--1 {
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  left: -100px;
+  background: radial-gradient(circle, var(--theme-accent) 0%, transparent 70%);
+  animation-delay: 0s;
 }
 
-/* 微发光边 —— 给选中 / 主要卡片 */
-.card-glow {
-  position: relative;
+.bg-orb--2 {
+  width: 400px;
+  height: 400px;
+  top: 30%;
+  right: -80px;
+  background: radial-gradient(circle, var(--theme-accent-2) 0%, transparent 70%);
+  animation-delay: -6s;
+  opacity: 0.28;
 }
-.card-glow::before {
-  content: '';
+
+.bg-orb--3 {
+  width: 450px;
+  height: 450px;
+  bottom: -120px;
+  left: 30%;
+  background: radial-gradient(circle, var(--color-success) 0%, transparent 70%);
+  animation-delay: -12s;
+  opacity: 0.18;
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.08); }
+  66% { transform: translate(-30px, 20px) scale(0.95); }
+}
+
+/* 细网格 — 像仪表盘的刻度 */
+.bg-grid {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(91, 157, 255, 0.4),
-    rgba(56, 232, 200, 0.2) 40%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, #000 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 80%);
 }
 
-/* 标签 chip */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: rgba(91, 157, 255, 0.1);
-  color: var(--accent-1-2);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: var(--letter-spacing-wide);
-  border: 1px solid rgba(91, 157, 255, 0.18);
-  text-transform: uppercase;
-}
-
-/* 隐藏（保留可访问性） */
-.sr-only {
+/* 粒子 canvas */
+.bg-particles {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
-/* 无过渡（用于脚本切换快照） */
-.no-anim,
-.no-anim * {
-  transition: none !important;
-  animation: none !important;
+/* 噪点纹理 — 增加颗粒感（极细微） */
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.5;
+  mix-blend-mode: overlay;
 }
 
-/* 减少动画偏好 */
+/* =============================================================
+ * 应用容器 — 约束宽度并置于背景之上
+ * ============================================================= */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--container-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-bottom: var(--space-10);
+}
+
+/* =============================================================
+ * 通用动画基类 — 进入动画
+ * ============================================================= */
+.fade-in-up {
+  animation: fade-in-up var(--dur-slow) var(--ease-out) both;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 辅助：可聚焦元素的键盘焦点环 */
+:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Reduce motion 友好 */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -216,6 +230,6 @@ h4 {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
+  .bg-orb { animation: none !important; }
 }

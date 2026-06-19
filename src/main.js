@@ -1,23 +1,20 @@
 /**
- * main.js —— 应用入口
+ * main.js — 应用入口
  *
  * 职责：
  *   1) 启动时加载默认城市天气并渲染整页
  *   2) 绑定搜索栏 / 定位按钮事件
  *   3) 管理主题（根据天气 type 切换背景色）
  *   4) 数字动画（简单的 roll 效果）
- *   5) 背景粒子（简易 canvas，制造科技感氛围）
+ *   5) 背景粒子（简易 canvas，制造氛围）
  */
 
 import { getWeatherByCity, getWeatherByLocation } from './js/services/WeatherService.js';
-import { createIcon, injectStyle as injectIconStyle } from './js/components/WeatherIcon.js';
+import { createIcon } from './js/components/WeatherIcon.js';
 import { WEATHER_THEMES, DEFAULT_CITY } from './js/config/config.js';
 
-// 为图标动画注入 keyframes
-injectIconStyle();
-
 /* ============================================================
- * DOM 引用 —— 在 DOMContentLoaded 之后再获取
+ * DOM 引用 — 在 DOMContentLoaded 之后再获取
  * ============================================================ */
 const el = {};
 
@@ -35,6 +32,13 @@ function queryDOM() {
   el.metricPressure = document.getElementById('metric-pressure');
   el.metricVisibility = document.getElementById('metric-visibility');
   el.metricUV = document.getElementById('metric-uv');
+  el.metricCloud = document.getElementById('metric-cloud');
+  el.metricUVLevel = document.getElementById('metric-uv-level');
+
+  el.barHumidity = document.getElementById('bar-humidity');
+  el.barPressure = document.getElementById('bar-pressure');
+  el.barVisibility = document.getElementById('bar-visibility');
+  el.barCloud = document.getElementById('bar-cloud');
 
   el.hourly = document.getElementById('hourly');
   el.daily = document.getElementById('daily');
@@ -52,16 +56,15 @@ function queryDOM() {
 /* ============================================================
  * 数字滚动：从 0 平滑到目标值
  * ============================================================ */
-function animateNumber(node, target, { suffix = '', duration = 600, decimals = 0 } = {}) {
+function animateNumber(node, target, { suffix = '', duration = 600, decimals = 0, start = null } = {}) {
   if (!node) return;
   const startTs = performance.now();
+  const startValue = start !== null ? start : 0;
   const tick = (ts) => {
     const p = Math.min(1, (ts - startTs) / duration);
-    // easeOutCubic
     const eased = 1 - Math.pow(1 - p, 3);
-    const value = target * eased;
-    node.textContent =
-      decimals > 0 ? `${value.toFixed(decimals)}${suffix}` : `${Math.round(value)}${suffix}`;
+    const value = startValue + (target - startValue) * eased;
+    node.textContent = decimals > 0 ? `${value.toFixed(decimals)}${suffix}` : `${Math.round(value)}${suffix}`;
     if (p < 1) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -77,14 +80,27 @@ function windDirText(deg) {
 }
 
 /* ============================================================
+ * UV 等级描述
+ * ============================================================ */
+function uvLevelText(uv) {
+  if (uv < 3) return '低';
+  if (uv < 6) return '中';
+  if (uv < 8) return '高';
+  if (uv < 11) return '甚高';
+  return '极高';
+}
+
+/* ============================================================
  * 渲染逻辑
  * ============================================================ */
 
 function setTheme(type) {
   const theme = WEATHER_THEMES[type] || WEATHER_THEMES.cloudy;
+  document.documentElement.style.setProperty('--theme-accent', theme.accent);
+  document.documentElement.style.setProperty('--theme-accent-2', theme.accent2);
+  document.documentElement.style.setProperty('--theme-accent-soft', theme.accentSoft);
   document.documentElement.style.setProperty('--theme-bg-1', theme.bg1);
   document.documentElement.style.setProperty('--theme-bg-2', theme.bg2);
-  document.documentElement.style.setProperty('--theme-accent', theme.accent);
 }
 
 function renderHero(data) {
@@ -109,10 +125,24 @@ function renderMetrics(data) {
   if (el.metricPressure) animateNumber(el.metricPressure, data.pressure, { suffix: ' hPa', duration: 700 });
   if (el.metricVisibility) animateNumber(el.metricVisibility, data.visibility, { suffix: ' km', duration: 700, decimals: 1 });
   if (el.metricUV) animateNumber(el.metricUV, data.uv, { duration: 700, decimals: 1 });
+  if (el.metricCloud) animateNumber(el.metricCloud, data.cloud, { suffix: '%', duration: 700 });
+  if (el.metricUVLevel) el.metricUVLevel.textContent = `等级：${uvLevelText(data.uv)}`;
 
-  // 风向+阵风的文字说明
-  const windText = document.querySelector('[data-metric-wind]');
-  if (windText) windText.textContent = `${windDirText(data.wind.dir)}风 · 阵风 ${data.wind.gust}`;
+  // 指标条动画（简单百分比）
+  if (el.barHumidity) el.barHumidity.style.width = `${Math.min(100, data.humidity)}%`;
+  if (el.barPressure) {
+    const pct = Math.min(100, Math.max(20, ((data.pressure - 980) / 60) * 100));
+    el.barPressure.style.width = `${pct}%`;
+  }
+  if (el.barVisibility) {
+    const pct = Math.min(100, (data.visibility / 30) * 100);
+    el.barVisibility.style.width = `${pct}%`;
+  }
+  if (el.barCloud) el.barCloud.style.width = `${Math.min(100, data.cloud)}%`;
+
+  // 风向+阵风
+  const windSub = document.querySelector('[data-metric-wind]');
+  if (windSub) windSub.textContent = `${windDirText(data.wind.dir)}风 · 阵风 ${data.wind.gust}`;
 }
 
 function renderHourly(data) {
@@ -161,9 +191,7 @@ function renderHeaderDate() {
   if (!el.headerDate) return;
   const now = new Date();
   const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-  el.headerDate.textContent = `${weekdays[now.getDay()]} · ${
-    String(now.getMonth() + 1).padStart(2, '0')
-  }月${String(now.getDate()).padStart(2, '0')}日 · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  el.headerDate.textContent = `${weekdays[now.getDay()]} · ${String(now.getMonth() + 1).padStart(2, '0')}月${String(now.getDate()).padStart(2, '0')}日 · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 }
 
 function showError(msg) {
@@ -178,7 +206,6 @@ function showError(msg) {
 
 async function load(query) {
   showError('');
-  document.body.classList.add('is-loading');
   try {
     const data = await getWeatherByCity(query);
     setTheme(data.type);
@@ -190,14 +217,11 @@ async function load(query) {
   } catch (err) {
     console.error('[WeatherVision]', err);
     showError(`⚠ ${err.message}`);
-  } finally {
-    document.body.classList.remove('is-loading');
   }
 }
 
 async function loadByLocation() {
   showError('');
-  document.body.classList.add('is-loading');
   try {
     const data = await getWeatherByLocation();
     setTheme(data.type);
@@ -209,13 +233,11 @@ async function loadByLocation() {
   } catch (err) {
     console.error('[WeatherVision][geo]', err);
     showError(`⚠ 无法使用定位：${err.message}`);
-  } finally {
-    document.body.classList.remove('is-loading');
   }
 }
 
 /* ============================================================
- * 背景粒子（轻量化，仅制造氛围；无外部依赖）
+ * 背景粒子
  * ============================================================ */
 function initParticles() {
   const canvas = document.getElementById('bg-particles');
@@ -247,10 +269,7 @@ function initParticles() {
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      if (p.y < -10) {
-        p.y = h + 10;
-        p.x = Math.random() * w;
-      }
+      if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
       if (p.x < -10) p.x = w + 10;
       if (p.x > w + 10) p.x = -10;
 

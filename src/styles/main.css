@@ -1,146 +1,23 @@
-/**
- * main.css
- * ------------------------------------------------------------------
- * 应用级样式：所有组件的视觉样式集中在此。
- * 按区域分块：
- *   1. 背景层（bg-layer）
- *   2. App Header / Footer
- *   3. Search 搜索栏
- *   4. Hero 主天气卡片
- *   5. Metrics 指标网格
- *   6. Hourly 24 小时预报
- *   7. 7-day 每日预报
- *   8. Sunrise 日出日落
- *   9. 响应式（断点 768 / 1024）
- * ------------------------------------------------------------------
- */
+/* =============================================================
+ * main.css — 组件样式 v2.0
+ * 参考：shadcn/ui · Linear · Apple HIG · Arc Design
+ * 命名约定：BEM（block__element--modifier）
+ * ============================================================= */
 
 @import './variables.css';
 @import './base.css';
 @import './animations.css';
 
-/* ============================================================
- * 1. 背景层 —— 多层叠加制造深邃科技感
- * ============================================================ */
-
-.bg-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 20% 10%, rgba(91, 157, 255, 0.22), transparent 55%),
-    radial-gradient(ellipse at 80% 90%, rgba(56, 232, 200, 0.12), transparent 55%),
-    linear-gradient(180deg, var(--color-bg-0), var(--color-bg-1));
-}
-
-.bg-gradient {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      1000px 600px at 70% -10%,
-      rgba(91, 157, 255, 0.18),
-      transparent 70%
-    ),
-    radial-gradient(
-      800px 500px at -10% 120%,
-      rgba(183, 138, 255, 0.15),
-      transparent 70%
-    );
-  opacity: 0.9;
-}
-
-/* 细线网格 —— 制造数据面板感 */
-.bg-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(91, 157, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(91, 157, 255, 0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 80%);
-}
-
-/* 噪点层 —— 制造胶片颗粒感 */
-.bg-noise {
-  position: absolute;
-  inset: 0;
-  opacity: 0.25;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-
-/* 大型发光 orb */
-.bg-glow {
-  position: absolute;
-  inset: 0;
-}
-.glow-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.5;
-}
-.glow-1 {
-  width: 520px;
-  height: 520px;
-  top: -180px;
-  left: -120px;
-  background: radial-gradient(circle, var(--accent-1), transparent 70%);
-  animation: orb-drift-1 22s ease-in-out infinite;
-}
-.glow-2 {
-  width: 420px;
-  height: 420px;
-  top: 20%;
-  right: -140px;
-  background: radial-gradient(circle, var(--accent-2), transparent 70%);
-  animation: orb-drift-2 26s ease-in-out infinite;
-  opacity: 0.38;
-}
-.glow-3 {
-  width: 560px;
-  height: 560px;
-  bottom: -220px;
-  left: 30%;
-  background: radial-gradient(circle, var(--accent-3), transparent 70%);
-  animation: orb-drift-3 32s ease-in-out infinite;
-  opacity: 0.32;
-}
-
-/* 天气粒子 canvas（浮于最上层但仍 behind 卡片） */
-.weather-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* ============================================================
- * 2. App 容器 & 头尾
- * ============================================================ */
-
-.app {
-  position: relative;
-  z-index: 1;
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: var(--app-gutter);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  min-height: 100vh;
-}
-
-/* --- Header --- */
+/* =============================================================
+ * 1. Header — 品牌区 + 时间
+ * ============================================================= */
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-2) 0;
-  animation: fade-down var(--dur-slow) var(--ease-out) both;
+  gap: var(--space-4);
+  padding: var(--space-2) 0 var(--space-1);
+  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
 }
 
 .brand {
@@ -150,1035 +27,834 @@
 }
 
 .brand-logo {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-md);
-  display: grid;
-  place-items: center;
-  color: var(--accent-1-2);
-  background: rgba(91, 157, 255, 0.08);
-  border: 1px solid rgba(91, 157, 255, 0.2);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%);
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 6px 20px -6px var(--theme-accent);
+  transition: transform var(--dur-base) var(--ease-out);
 }
-.brand-logo svg {
-  width: 22px;
-  height: 22px;
+.brand-logo:hover {
+  transform: scale(1.06) rotate(-6deg);
 }
 
 .brand-text {
   display: flex;
   flex-direction: column;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 .brand-title {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-lg);
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.14em;
-  color: var(--text-1);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-1);
 }
 .brand-subtitle {
-  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--text-3);
-  letter-spacing: 0.1em;
+  color: var(--color-text-3);
   margin-top: 2px;
 }
 
-.header-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.live-dot {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--accent-2);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.12em;
-}
-.live-dot .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent-2);
-  box-shadow: 0 0 0 3px rgba(56, 232, 200, 0.18), 0 0 12px var(--accent-2);
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-
-.date-label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  color: var(--text-3);
-  letter-spacing: var(--letter-spacing-wide);
-}
-
-/* --- Footer --- */
-.app-footer {
-  margin-top: auto;
-  padding: var(--space-5) 0 var(--space-3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--text-4);
-  border-top: 1px solid var(--border-1);
-  letter-spacing: var(--letter-spacing-wide);
-}
-
-/* ============================================================
- * 3. Search 搜索栏
- * ============================================================ */
-
-.search-section {
-  animation: fade-up var(--dur-slow) var(--ease-out) both 80ms;
-}
-
-.search-bar {
+.header-actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-1);
-  border-radius: var(--radius-xl);
-  transition:
-    border-color var(--dur-base),
-    box-shadow var(--dur-base),
-    background var(--dur-base);
-}
-.search-bar:focus-within {
-  border-color: rgba(91, 157, 255, 0.45);
-  background: rgba(91, 157, 255, 0.05);
-  box-shadow:
-    0 0 0 3px rgba(91, 157, 255, 0.12),
-    0 10px 32px rgba(0, 0, 0, 0.28);
 }
 
-.search-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--text-3);
-  flex-shrink: 0;
-}
-
-.search-input {
-  flex: 1;
-  font-size: var(--fs-md);
-  font-weight: var(--fw-medium);
-  color: var(--text-1);
-  letter-spacing: 0.01em;
-}
-.search-input::placeholder {
-  color: var(--text-4);
-  font-weight: var(--fw-regular);
-}
-
-.search-btn {
+.header-live {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-family: var(--font-mono);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-1);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.06em;
-  color: var(--text-1);
-  background: linear-gradient(135deg, var(--accent-1-3), var(--accent-1));
-  box-shadow: var(--shadow-glow);
-  transition: transform var(--dur-base) var(--ease-spring), filter var(--dur-base);
-}
-.search-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.12);
-}
-.search-btn:active {
-  transform: translateY(0);
+  color: var(--color-text-2);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
-.geo-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-md);
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-1);
-  color: var(--text-2);
-  transition: all var(--dur-base);
-}
-.geo-btn:hover {
-  color: var(--accent-2);
-  border-color: rgba(56, 232, 200, 0.4);
-  background: rgba(56, 232, 200, 0.08);
-}
-.geo-btn svg {
-  width: 20px;
-  height: 20px;
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: var(--color-success);
+  display: inline-block;
+  animation: live-pulse 2.2s ease-in-out infinite;
 }
 
-/* 搜索建议（简化） */
-.search-hints {
-  display: flex;
+/* =============================================================
+ * 2. Button — 现代风格按钮（参考 shadcn/ui & Linear）
+ * ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  margin-top: var(--space-3);
-  flex-wrap: wrap;
-}
-.search-hints .hint {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-1);
-  color: var(--text-3);
-  transition: all var(--dur-fast);
-  letter-spacing: 0.08em;
-}
-.search-hints .hint:hover {
-  color: var(--text-1);
-  border-color: rgba(91, 157, 255, 0.35);
-  background: rgba(91, 157, 255, 0.08);
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-tight);
+  border: 1px solid transparent;
+  transition: background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
 }
 
-/* ============================================================
- * 4. Hero 主天气卡片 —— 大面积展示
- * ============================================================ */
-
-.hero-section {
-  animation: fade-up var(--dur-slow) var(--ease-out) both 120ms;
+.btn__icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
-.hero-card {
+/* Primary — 实色 + 光晕 */
+.btn--primary {
+  background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%);
+  color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 4px 14px -4px var(--theme-accent);
+}
+.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 8px 22px -6px var(--theme-accent);
+}
+.btn--primary:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+/* Ghost — 透明背景（辅助操作） */
+.btn--ghost {
+  background: var(--color-surface-2);
+  border-color: var(--color-border-1);
+  color: var(--color-text-2);
+}
+.btn--ghost:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-2);
+  color: var(--color-text-1);
+}
+.btn--ghost:active {
+  transform: scale(0.98);
+}
+
+/* =============================================================
+ * 3. Search Combo — 输入框 + 按钮融合（参考 Linear 搜索栏）
+ * ============================================================= */
+.search-section {
+  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
+  animation-delay: 80ms;
+}
+
+.search-combo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 8px 8px 16px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-1);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.search-combo:focus-within {
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 4px var(--theme-accent-soft), var(--shadow-md);
+}
+
+.search-combo__icon {
+  color: var(--color-text-3);
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.search-combo__input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  font-size: var(--fs-lg);
+  color: var(--color-text-1);
+  background: transparent;
+}
+
+.search-combo__divider {
+  width: 1px;
+  height: 24px;
+  background: var(--color-border-2);
+  flex-shrink: 0;
+}
+
+.search-error {
+  margin-top: var(--space-2);
+  padding: 0 var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--color-danger);
+  display: none;
+}
+.search-error.visible {
+  display: block;
+  animation: fade-in-up var(--dur-base) var(--ease-out) both;
+}
+
+/* =============================================================
+ * 4. Card — 基础玻璃卡片（所有 panel / metric / hero 的基础）
+ * ============================================================= */
+.card {
   position: relative;
-  padding: clamp(24px, 3.4vw, 44px);
-  background:
-    linear-gradient(
-      140deg,
-      rgba(91, 157, 255, 0.14) 0%,
-      rgba(255, 255, 255, 0.04) 45%,
-      rgba(56, 232, 200, 0.08) 100%
-    ),
-    var(--surface-2);
-  border: 1px solid var(--border-2);
-  border-radius: 28px;
-  backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturation));
-  -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturation));
-  box-shadow: var(--shadow-lg);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-1);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  box-shadow: var(--shadow-md);
+  transition: transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 40%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* =============================================================
+ * 5. Hero — 主卡片
+ * ============================================================= */
+.hero {
+  padding: clamp(20px, 3.4vw, 36px);
+  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
+  animation-delay: 120ms;
   overflow: hidden;
 }
 
-/* 扫描线（顶部一条很薄的线缓慢扫过） */
-.hero-card::after {
+/* Hero 的顶部渐变高光 */
+.hero::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 20%;
+  right: 20%;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(91, 157, 255, 0.55),
-    rgba(56, 232, 200, 0.35),
+    var(--theme-accent),
     transparent
   );
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
-.hero-inner {
+.hero__grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: var(--space-6);
+  gap: var(--space-7);
   align-items: center;
 }
 
-.hero-info {
+.hero__primary {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
-.hero-location {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-.hero-city {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--letter-spacing-tight);
-  color: var(--text-1);
-}
-.hero-country {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  color: var(--text-3);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.hero-date-row {
+.hero__eyebrow {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  color: var(--text-3);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  letter-spacing: 0.08em;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
-.hero-date-row .sep {
+.hero__city {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-1);
+}
+
+.hero__dot {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--text-4);
+  background: var(--color-text-4);
+  display: inline-block;
+  margin: 0 4px;
 }
 
-/* 主温度展示 */
-.hero-temp {
+.hero__date {
+  font-size: var(--fs-base);
+  color: var(--color-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__temp-wrap {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
+  gap: var(--space-5);
 }
-.temp-num {
-  font-size: clamp(96px, 14vw, 180px);
+
+.hero__temp {
+  font-size: var(--fs-6xl);
   font-weight: var(--fw-light);
-  line-height: 0.9;
-  letter-spacing: -0.04em;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-1);
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.55) 100%);
+  background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.65) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.temp-unit {
-  font-size: clamp(28px, 3.2vw, 42px);
-  font-weight: var(--fw-light);
-  color: var(--text-2);
-  margin-top: 0.3em;
-  font-variant-numeric: tabular-nums;
-}
 
-.hero-weather {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.hero-desc {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-medium);
-  color: var(--text-1);
-}
-
-.hero-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-  color: var(--text-2);
-  font-size: var(--fs-sm);
-}
-.hero-meta .meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.hero-meta .meta-val {
-  color: var(--text-1);
-  font-weight: var(--fw-medium);
-}
-
-/* Hero 右侧 —— 大图标 SVG */
-.hero-icon {
-  position: relative;
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1 / 1;
-  min-height: 160px;
-  border-radius: 28px;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(91, 157, 255, 0.15) 0%,
-    transparent 70%
-  );
-}
-.hero-icon svg {
-  width: clamp(120px, 20vw, 240px);
-  height: auto;
-  filter: drop-shadow(0 16px 40px rgba(91, 157, 255, 0.35));
-}
-.hero-icon .sun-rays {
-  transform-origin: center;
-  animation: spin-slow 32s linear infinite;
-}
-.hero-icon .sun-core {
-  animation: breathe 4s ease-in-out infinite;
-  transform-origin: center;
-}
-
-/* ============================================================
- * 5. 指标网格 —— 湿度 / 风速 / 气压 / 能见度 / 紫外线
- * ============================================================ */
-
-.metrics-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: var(--space-4);
-  animation: fade-up var(--dur-slow) var(--ease-out) both 160ms;
-}
-
-.metric-card {
-  position: relative;
-  padding: var(--space-5);
-  background: var(--surface-2);
-  border: 1px solid var(--border-1);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: transform var(--dur-base) var(--ease-out),
-    border-color var(--dur-base);
-}
-.metric-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(91, 157, 255, 0.25);
-}
-
-.metric-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-4);
-}
-.metric-title {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-3);
-}
-.metric-icon {
-  width: 28px;
-  height: 28px;
-  color: var(--accent-1-2);
-  opacity: 0.9;
-}
-
-.metric-value {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-1);
-  margin-bottom: var(--space-2);
-}
-.metric-num {
-  font-size: 40px;
-  font-weight: var(--fw-light);
-  letter-spacing: -0.02em;
-  color: var(--text-1);
-  font-variant-numeric: tabular-nums;
-}
-.metric-unit {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-regular);
-  color: var(--text-3);
-}
-
-.metric-sub {
-  font-size: var(--fs-sm);
-  color: var(--text-2);
-}
-
-/* 可视化小图（卡片内） */
-.metric-vis {
-  margin-top: var(--space-4);
-  height: 48px;
-  position: relative;
-}
-
-/* 湿度圆弧 */
-.humidity-ring {
-  width: 72px;
-  height: 72px;
-  margin-top: var(--space-3);
-}
-.humidity-ring circle {
-  fill: none;
-  stroke-width: 6;
-  stroke-linecap: round;
-  transform: rotate(-90deg);
-  transform-origin: center;
-}
-.humidity-ring .track {
-  stroke: rgba(91, 157, 255, 0.15);
-}
-.humidity-ring .value {
-  stroke: url(#grad-humidity);
-  transition: stroke-dashoffset var(--dur-xl) var(--ease-out);
-}
-
-/* 风速 */
-.wind-compass {
-  width: 100%;
-  height: 80px;
-  margin-top: var(--space-3);
-}
-.wind-compass .needle {
-  transform-origin: 50px 50px;
-  transition: transform var(--dur-xl) var(--ease-out);
-}
-
-/* 紫外线条 */
-.uv-bar {
-  display: flex;
-  gap: 3px;
-  height: 8px;
-  margin-top: var(--space-3);
-  border-radius: var(--radius-xs);
-  overflow: hidden;
-}
-.uv-bar span {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
-  transition: background var(--dur-slow) ease-out;
-}
-.uv-bar span.on {
-  background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
-}
-
-/* 能见度条 */
-.visibility-bar {
-  height: 8px;
-  margin-top: var(--space-3);
-  border-radius: var(--radius-xs);
-  background: rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-  position: relative;
-}
-.visibility-bar-fill {
-  position: absolute;
-  inset: 0;
-  right: auto;
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  border-radius: var(--radius-xs);
-  transition: width var(--dur-xl) var(--ease-out);
-}
-
-/* 气压趋势（迷你柱状） */
-.pressure-bars {
-  display: flex;
-  gap: 3px;
-  height: 48px;
-  margin-top: var(--space-3);
-  align-items: flex-end;
-}
-.pressure-bars span {
-  flex: 1;
-  background: linear-gradient(180deg, var(--accent-1-2), var(--accent-1-3));
-  border-radius: 3px 3px 1px 1px;
-  opacity: 0.6;
-  transform-origin: bottom;
-  animation: grow-up var(--dur-xl) var(--ease-out) both;
-}
-
-/* ============================================================
- * 6. Hourly 24 小时
- * ============================================================ */
-
-.hourly-section {
-  padding: var(--space-5);
-  background: var(--surface-2);
-  border: 1px solid var(--border-1);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-sm);
-  animation: fade-up var(--dur-slow) var(--ease-out) both 200ms;
-}
-
-.section-title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: var(--space-4);
-}
-.section-title h3 {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--text-2);
-}
-.section-title .section-tag {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--text-4);
-  letter-spacing: 0.08em;
-}
-
-/* 温度折线图 */
-.temp-chart {
-  width: 100%;
-  height: 120px;
-  margin-bottom: var(--space-4);
-  overflow: visible;
-}
-.temp-chart .temp-line {
-  fill: none;
-  stroke: url(#tempGrad);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 4px 12px rgba(91, 157, 255, 0.35));
-}
-.temp-chart .temp-area {
-  fill: url(#tempAreaGrad);
-  opacity: 0.35;
-}
-.temp-chart .temp-dot {
-  fill: var(--accent-1-2);
-  stroke: rgba(10, 18, 40, 0.9);
-  stroke-width: 2;
-  filter: drop-shadow(0 4px 10px rgba(91, 157, 255, 0.6));
-}
-
-/* 小时卡片行 */
-.hourly-row {
-  display: flex;
-  gap: var(--space-2);
-  overflow-x: auto;
-  padding: var(--space-2) 2px var(--space-2);
-  margin: 0 -2px;
-  scroll-snap-type: x mandatory;
-}
-
-.hourly-item {
-  flex: 0 0 78px;
+.hero__desc-block {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: calc(var(--fs-6xl) * 0.25);
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-2);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid transparent;
-  scroll-snap-align: start;
-  transition: all var(--dur-base) var(--ease-out);
 }
-.hourly-item:hover {
-  background: rgba(91, 157, 255, 0.06);
-  border-color: rgba(91, 157, 255, 0.2);
-  transform: translateY(-2px);
+
+.hero__desc {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-1);
 }
-.hourly-item.active {
-  background: linear-gradient(
-    180deg,
-    rgba(91, 157, 255, 0.16),
-    rgba(91, 157, 255, 0.04)
-  );
-  border-color: rgba(91, 157, 255, 0.3);
+
+.hero__feels {
+  font-size: var(--fs-sm);
+  color: var(--color-text-3);
 }
-.hourly-time {
-  font-family: var(--font-mono);
+
+.hero__meta {
+  display: inline-flex;
+  padding: 10px 16px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border-1);
+  border-radius: var(--radius-full);
+  align-self: flex-start;
+  gap: var(--space-3);
+}
+
+.hero__meta-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.hero__meta-label {
   font-size: var(--fs-xs);
-  color: var(--text-3);
-  letter-spacing: 0.08em;
+  color: var(--color-text-3);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
 }
-.hourly-item.active .hourly-time {
-  color: var(--accent-1-2);
+
+.hero__meta-value {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-1);
+  font-variant-numeric: tabular-nums;
 }
-.hourly-item .hour-icon {
-  width: 40px;
-  height: 40px;
-  margin: 4px 0;
+
+/* ---------- Hero 右侧：图标 + 日出日落 ---------- */
+.hero__secondary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: center;
 }
-.hourly-item .hour-icon svg {
+
+.hero__icon {
+  width: clamp(140px, 22vw, 220px);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: hero-soft-bob 4.5s ease-in-out infinite;
+}
+
+.hero__icon svg {
   width: 100%;
   height: 100%;
 }
-.hourly-temp {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-  color: var(--text-1);
-  font-variant-numeric: tabular-nums;
-}
 
-/* ============================================================
- * 7. 7-day 每日预报
- * ============================================================ */
-
-.forecast-section {
-  padding: var(--space-5);
-  background: var(--surface-2);
-  border: 1px solid var(--border-1);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-sm);
-  animation: fade-up var(--dur-slow) var(--ease-out) both 240ms;
-}
-
-.forecast-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin-top: var(--space-3);
-}
-
-.forecast-row {
+/* 日出日落轨道 */
+.hero__sun-track {
+  width: 100%;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr 0.8fr 1.6fr 0.8fr;
+  grid-template-columns: 1fr 1.6fr 1fr;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-3);
-  border-radius: var(--radius-md);
-  transition: background var(--dur-fast);
-}
-.forecast-row + .forecast-row {
-  border-top: 1px solid var(--border-1);
-}
-.forecast-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  gap: var(--space-3);
+  padding: 14px 18px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-1);
+  border-radius: var(--radius-xl);
 }
 
-.forecast-day {
+.hero__sun-col {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.forecast-day .d-main {
-  font-size: var(--fs-base);
-  font-weight: var(--fw-medium);
-  color: var(--text-1);
-}
-.forecast-day .d-sub {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--text-4);
-  letter-spacing: 0.08em;
+
+.hero__sun-col--end {
+  align-items: flex-end;
+  text-align: right;
 }
 
-.forecast-icon {
-  width: 42px;
-  height: 42px;
-  justify-self: start;
+.hero__sun-label {
+  font-size: var(--fs-xs);
+  color: var(--color-text-3);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
 }
-.forecast-icon svg {
+
+.hero__sun-value {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-1);
+}
+
+.hero__sun-graphic {
+  width: 100%;
+  color: var(--theme-accent);
+  opacity: 0.9;
+}
+
+.hero__sun-graphic svg {
+  width: 100%;
+  height: 44px;
+  overflow: visible;
+}
+
+.hero__sun-ball {
+  filter: drop-shadow(0 0 6px var(--theme-accent));
+}
+
+/* =============================================================
+ * 6. Metrics — 6 个指标卡
+ * ============================================================= */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
+  animation-delay: 200ms;
+}
+
+.metric {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.metric__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.metric__label {
+  font-size: var(--fs-base);
+  color: var(--color-text-2);
+  font-weight: var(--fw-medium);
+}
+
+.metric__chip {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--color-text-3);
+  letter-spacing: var(--tracking-widest);
+  padding: 3px 8px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-1);
+  border-radius: var(--radius-full);
+}
+
+.metric__value {
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-light);
+  line-height: 1;
+  color: var(--color-text-1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+}
+
+.metric__unit {
+  font-size: var(--fs-lg);
+  color: var(--color-text-3);
+  font-weight: var(--fw-regular);
+  margin-left: 2px;
+}
+
+.metric__sub {
+  font-size: var(--fs-sm);
+  color: var(--color-text-3);
+}
+
+.metric__bar {
+  height: 4px;
+  background: var(--color-surface-3);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.metric__bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%);
+  border-radius: inherit;
+  transition: width var(--dur-slower) var(--ease-out);
+  animation: bar-fill var(--dur-slower) var(--ease-out) both;
+}
+
+/* =============================================================
+ * 7. Panel — 预报区的外层卡片
+ * ============================================================= */
+.panel {
+  padding: var(--space-6);
+  animation: fade-in-up var(--dur-slower) var(--ease-out) both;
+  animation-delay: 260ms;
+}
+
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+  gap: var(--space-3);
+}
+
+.panel__title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-1);
+  letter-spacing: var(--tracking-tight);
+}
+
+.panel__sub {
+  font-size: var(--fs-sm);
+  color: var(--color-text-3);
+  margin-top: 4px;
+}
+
+.panel__badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: var(--tracking-widest);
+  color: var(--theme-accent);
+  padding: 6px 12px;
+  background: var(--theme-accent-soft);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+}
+
+/* =============================================================
+ * 8. Hourly — 24 小时预报（横向滚动卡片）
+ * ============================================================= */
+.hourly {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin: 0 -4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hourly-item {
+  flex: 0 0 auto;
+  width: 78px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 14px 10px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-1);
+  border-radius: var(--radius-xl);
+  scroll-snap-align: start;
+  transition: transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+.hourly-item:hover {
+  transform: translateY(-2px);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-2);
+}
+
+.hourly-hour {
+  font-size: var(--fs-xs);
+  color: var(--color-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.hourly-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hourly-icon svg {
   width: 100%;
   height: 100%;
 }
 
-.forecast-temp-range {
+.hourly-temp {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.hourly-pop {
+  font-size: 11px;
+  color: var(--theme-accent);
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  background: var(--theme-accent-soft);
+  border-radius: var(--radius-sm);
+}
+
+/* =============================================================
+ * 9. Daily — 7 天预报（列表式 + 温度条）
+ * ============================================================= */
+.daily {
+  display: flex;
+  flex-direction: column;
+}
+
+.daily-row {
+  display: grid;
+  grid-template-columns: 1.1fr 44px 1.5fr 2fr 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border-1);
+  transition: background-color var(--dur-base) var(--ease-out);
+}
+
+.daily-row:last-child {
+  border-bottom: none;
+}
+
+.daily-row:hover {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.03),
+    transparent
+  );
+}
+
+.daily-day {
+  font-size: var(--fs-base);
+  color: var(--color-text-1);
+  font-weight: var(--fw-medium);
+}
+
+.daily-icon {
+  width: 36px;
+  height: 36px;
+}
+.daily-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.daily-desc {
+  font-size: var(--fs-sm);
+  color: var(--color-text-3);
+}
+
+.daily-temp {
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
-.forecast-temp-lo {
-  color: var(--text-3);
+
+.daily-min {
+  color: var(--color-text-3);
   font-variant-numeric: tabular-nums;
-  width: 36px;
+  font-size: var(--fs-base);
+  min-width: 34px;
   text-align: right;
 }
-.forecast-temp-bar {
+
+.daily-max {
+  color: var(--color-text-1);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-base);
+  min-width: 34px;
+}
+
+.daily-bar {
   flex: 1;
   height: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-pill);
-  position: relative;
-  min-width: 60px;
-}
-.forecast-temp-bar span {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, var(--accent-1-3), var(--accent-1-2), var(--accent-2));
-  border-radius: var(--radius-pill);
-  box-shadow: 0 0 12px rgba(91, 157, 255, 0.4);
-  animation: grow-up var(--dur-xl) var(--ease-out) both;
-  transform-origin: left;
-}
-.forecast-temp-hi {
-  color: var(--text-1);
-  font-weight: var(--fw-semibold);
-  font-variant-numeric: tabular-nums;
-  width: 36px;
-}
-
-.forecast-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-2);
-}
-
-.forecast-chip {
-  justify-self: end;
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.1em;
-  color: var(--text-3);
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-1);
-}
-
-/* ============================================================
- * 8. Sunrise 日出日落
- * ============================================================ */
-
-.sunrise-section {
-  padding: var(--space-5);
-  background: var(--surface-2);
-  border: 1px solid var(--border-1);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-sm);
-  animation: fade-up var(--dur-slow) var(--ease-out) both 280ms;
-}
-
-.sunrise-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr;
-  align-items: center;
-  margin-top: var(--space-3);
-}
-
-.sunrise-cell {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.sunrise-cell.right {
-  align-items: flex-end;
-}
-.sunrise-cell .label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-3);
-}
-.sunrise-cell .time {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-light);
-  color: var(--text-1);
-  font-variant-numeric: tabular-nums;
-}
-
-.sunrise-curve {
-  position: relative;
-  height: 120px;
-}
-.sunrise-curve svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.sunrise-curve .track {
-  fill: none;
-  stroke: rgba(91, 157, 255, 0.18);
-  stroke-width: 2;
-  stroke-dasharray: 4 6;
-}
-.sunrise-curve .sun {
-  fill: var(--accent-4);
-  filter: drop-shadow(0 0 12px rgba(255, 181, 98, 0.55));
-}
-
-/* ============================================================
- * 9. Loading 骨架
- * ============================================================ */
-
-.loading .hero-card,
-.loading .metric-card,
-.loading .hourly-section,
-.loading .forecast-section,
-.loading .sunrise-section {
-  pointer-events: none;
-}
-.loading [data-skeleton] {
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  color: transparent !important;
-  position: relative;
+  background: var(--color-surface-3);
+  border-radius: var(--radius-full);
   overflow: hidden;
+  position: relative;
 }
-.loading [data-skeleton]::after {
-  content: '';
-  position: absolute;
-  inset: 0;
+
+.daily-bar span {
+  display: block;
+  height: 100%;
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(91, 157, 255, 0.08),
-    transparent
+    var(--theme-accent) 0%,
+    var(--theme-accent-2) 50%,
+    var(--color-warning) 100%
   );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s linear infinite;
+  border-radius: inherit;
+  animation: bar-fill var(--dur-slower) var(--ease-out) both;
 }
 
-/* ============================================================
- * 10. 响应式断点
- * ============================================================ */
+.daily-pop {
+  font-size: var(--fs-sm);
+  color: var(--theme-accent);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
 
-@media (max-width: 1024px) {
-  .hero-inner {
+/* =============================================================
+ * 10. Footer
+ * ============================================================= */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  font-size: var(--fs-xs);
+  color: var(--color-text-4);
+  letter-spacing: var(--tracking-wide);
+}
+
+.app-footer__dot {
+  color: var(--color-text-4);
+}
+
+/* =============================================================
+ * 11. 响应式 — 平板 / 手机
+ * ============================================================= */
+
+/* 平板：metrics 变 2 列 */
+@media (max-width: 900px) {
+  .hero__grid {
     grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  .hero__secondary {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
     gap: var(--space-5);
   }
-  .hero-icon {
-    order: -1;
-    aspect-ratio: auto;
-    min-height: 120px;
-    padding: var(--space-4);
+  .hero__icon {
+    width: clamp(120px, 30vw, 180px);
   }
-  .hero-icon svg {
-    width: 140px;
-  }
-
-  .forecast-row {
-    grid-template-columns: 1fr 0.8fr 1.6fr 0.8fr;
-  }
-  .forecast-desc {
-    display: none;
-  }
-
-  .sunrise-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
-  .sunrise-cell.right {
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 768px) {
-  .app {
-    padding: var(--space-3);
-    gap: var(--space-4);
-  }
-
-  .app-header {
-    padding: var(--space-2) 0;
-  }
-
-  .brand-logo {
-    width: 34px;
-    height: 34px;
-  }
-
-  .header-meta {
-    gap: var(--space-3);
-  }
-
-  .search-bar {
-    padding: var(--space-2) var(--space-3);
-    gap: var(--space-2);
-    border-radius: var(--radius-lg);
-  }
-  .search-btn {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--fs-xs);
-  }
-
-  .hero-card {
-    padding: var(--space-5);
-    border-radius: var(--radius-lg);
-  }
-  .hero-city {
-    font-size: 28px;
-  }
-  .metric-num {
-    font-size: 32px;
-  }
-
-  .forecast-row {
-    grid-template-columns: 1fr 0.8fr 1.6fr 0.8fr;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-2);
-  }
-  .forecast-temp-range {
-    gap: var(--space-2);
-  }
-
-  .hourly-item {
-    flex-basis: 72px;
-  }
-}
-
-@media (max-width: 480px) {
-  .brand-subtitle {
-    display: none;
-  }
-  .live-dot span:not(.dot) {
-    display: none;
-  }
-  .date-label {
-    display: none;
-  }
-
-  .hero-city {
-    font-size: 24px;
-  }
-  .hero-meta {
-    font-size: var(--fs-xs);
-  }
-  .search-btn {
-    padding: var(--space-2);
-  }
-  .search-btn span {
-    display: none;
-  }
-
-  .metrics-section {
+  .metrics {
     grid-template-columns: repeat(2, 1fr);
   }
-  .metric-card {
-    padding: var(--space-4);
-  }
-  .metric-num {
-    font-size: 26px;
-  }
+}
 
-  .forecast-row {
-    grid-template-columns: 1fr 0.6fr 1.4fr 0.7fr;
+/* 手机：单列 + 紧凑间距 */
+@media (max-width: 640px) {
+  .app {
+    gap: var(--space-4);
   }
-  .forecast-icon {
-    width: 34px;
-    height: 34px;
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .forecast-chip {
+  .search-combo {
+    flex-wrap: wrap;
+    padding: 8px;
+  }
+  .search-combo__input {
+    order: 1;
+    width: 100%;
+    min-width: 100%;
+    padding: 8px 0;
+  }
+  .search-combo .btn {
+    order: 2;
+    flex: 1;
+  }
+  .hero {
+    padding: var(--space-5);
+  }
+  .hero__sun-track {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .hero__sun-col--end {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .metrics {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .panel {
+    padding: var(--space-5);
+  }
+  .panel__head {
+    margin-bottom: var(--space-4);
+  }
+  .daily-row {
+    grid-template-columns: 1fr 36px 2.5fr;
+    gap: var(--space-2);
+    padding: 12px 0;
+  }
+  .daily-desc,
+  .daily-pop {
     display: none;
-  }
-}
-
-/* ============================================================
- * 11. 无障碍 & 可访问性
- * ============================================================ */
-
-button:focus-visible,
-input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(91, 157, 255, 0.45);
-}
-
-/* 弱文本对比度增强（打印/高对比模式） */
-@media (prefers-contrast: more) {
-  :root {
-    --text-1: #ffffff;
-    --text-2: #d0d8ee;
-    --text-3: #9aa4be;
   }
 }
